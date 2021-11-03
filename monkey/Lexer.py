@@ -1,4 +1,4 @@
-import monkey.Token
+from monkey.Token import *
 
 class Lexer:
 
@@ -35,6 +35,6 @@ class Lexer:
             0:   Token(EOF, ""),
         }
 
-        token = tokens.get(self.char, "")
+        token = tokens.get(self.char, Token(ILLEGAL, ""))
         self.read_char()
         return token
