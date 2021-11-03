@@ -21,3 +21,10 @@ RBRACE = "}"
 # keywords
 FUNCTION = "FUNCTION"
 LET = "LET"
+
+# Token class
+class Token:
+
+    def __init__(self, token, char):
+        self.token = token
+        self.char = char
