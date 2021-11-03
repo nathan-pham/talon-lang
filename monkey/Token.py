@@ -25,6 +25,6 @@ LET = "LET"
 # Token class
 class Token:
 
-    def __init__(self, token, char):
-        self.token = token
-        self.char = char
+    def __init__(self, type, literal):
+        self.type = type
+        self.literal = literal

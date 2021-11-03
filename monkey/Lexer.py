@@ -24,5 +24,17 @@ class Lexer:
     def next_token(self):
 
         tokens = {
-            "=": Token(ASSIGN, self.char)
-        }            
+            "=": Token(ASSIGN, self.char),
+            ";": Token(SEMICOLON, self.char),
+            "(": Token(LPAREN, self.char),
+            ")": Token(RPAREN, self.char),
+            ",": Token(COMMA, self.char),
+            "+": Token(PLUS, self.char),
+            "{": Token(LBRACE, self.char),
+            "}": Token(RBRACE, self.char),
+            0:   Token(EOF, ""),
+        }
+
+        token = tokens.get(self.char, "")
+        self.read_char()
+        return token
