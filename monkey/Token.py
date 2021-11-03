@@ -22,6 +22,15 @@ RBRACE = "}"
 FUNCTION = "FUNCTION"
 LET = "LET"
 
+def lookup_ident(ident):
+
+    keywords = {
+        "fn": FUNCTION,
+        "let": LET
+    }
+
+    return keywords.get(ident, ident)
+
 # Token class
 class Token:
 
