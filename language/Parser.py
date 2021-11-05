@@ -22,7 +22,7 @@ class Parser:
     def parse_program(self):
         program = Program()
 
-        while self.current_token.type != EOF:
+        while self.current_token.type_ != EOF:
             stmt = self.parse_statement()
             if stmt != None:
                 program.statements.append(stmt)
@@ -31,11 +31,10 @@ class Parser:
         return program
 
     def parse_statement(self):
-        switch = {
-            [LET]: self.parse_let_statement()
-        }
+        if self.current_token.type_ == LET:
+            return self.parse_let_statement()
 
-        return switch.get(self.current_token.type, None)
+        return None
 
     def parse_let_statement(self):
         stmt = LetStatement(self.current_token)
@@ -48,6 +47,7 @@ class Parser:
         if not self.expect_peek(ASSIGN):
             return None
 
+        # TODO: parse expression, for now just skip to semicolon
         while not self.current_token_is(SEMICOLON):
             self.next_token()
 

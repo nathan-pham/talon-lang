@@ -1,4 +1,5 @@
 from language.Lexer import Lexer
+from language.Parser import Parser
 
 import platform
 
@@ -10,11 +11,9 @@ def read_file(path):
         file_contents = file.read().strip()
         
         lexer = Lexer(file_contents)
-
-        while lexer.char != 0:
-            token = lexer.next_token()
-            print(token)
-
+        parser = Parser(lexer)
+        program = parser.parse_program()
+        print(program)
         file.close()
 
 def repl():
@@ -34,9 +33,11 @@ def repl():
             case _:
                 lexer = Lexer(input_string)
 
-                while lexer.char != 0:
+                while True:
                     token = lexer.next_token()
                     print(token)
+                    if token.type_ == "EOF":
+                        break
 
 # repl()
 read_file("source.talon")

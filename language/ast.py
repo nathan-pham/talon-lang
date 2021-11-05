@@ -21,7 +21,7 @@ class Program:
             return None
 
 class LetStatement:
-    def __init__(self, token, name, value):
+    def __init__(self, token, name=None, value=None):
         self.token = token
         self.name = name
         self.value = value

@@ -1,13 +1,5 @@
 from language.Token import *
 
-# determine if character is a letter
-def is_letter(char):
-    return ("a" <= char and char <= "z") or ("A" <= char and char <= "Z") or char == "_"
-
-# determine if character is a number
-def is_digit(char):
-    return "0" <= char and char <= "9"
-
 # lexer class
 class Lexer:
 
@@ -36,6 +28,9 @@ class Lexer:
         self.position = self.read_position
         self.read_position += 1
 
+    def back_track(self):
+        self.read_position = self.position
+
     # read identifier from input
     def read_identifier(self):
 
@@ -43,7 +38,8 @@ class Lexer:
         position = self.position
 
         # increment position while next token is a letter
-        while is_letter(self.char): self.read_char()
+        while self.char.isalnum() or self.char == "_": self.read_char()
+        self.read_position = self.position
 
         # return identifier
         return self.input_[position:self.position]
@@ -55,8 +51,9 @@ class Lexer:
         position = self.position
 
         # increment position while next token is a digit
-        while is_digit(self.char): self.read_char()
-        
+        while self.char.isnumeric(): self.read_char()
+        self.read_position = self.position
+
         # return number
         return self.input_[position:self.position]
 
@@ -68,6 +65,7 @@ class Lexer:
         token = Token(ILLEGAL, self.char)
 
         match self.char:
+
             # double character tokens
             case "=":
                 if self.peek_char() == "=":
@@ -98,13 +96,16 @@ class Lexer:
             case "<": token = Token(LT, self.char)
             case ">": token = Token(GT, self.char)
 
+            # end of input
+            case 0: token = Token(EOF, self.char)
+
             # identifier or number tokens
             case _:
-                if is_letter(self.char):
+                if self.char.isalpha() or self.char == "_":
                     literal = self.read_identifier()
                     token = Token(lookup_ident(literal), literal)
 
-                elif is_digit(self.char):
+                elif self.char.isnumeric():
                     token = Token(INT, self.read_number())
 
                 else:
