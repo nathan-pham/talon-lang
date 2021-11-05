@@ -55,9 +55,9 @@ def lookup_ident(ident):
 # Token class
 class Token:
 
-    def __init__(self, type, literal):
-        self.type = type
+    def __init__(self, type_, literal):
+        self.type_ = type_
         self.literal = literal
     
     def __str__(self):
-        return f"<Type: {self.type}\tLiteral: {self.literal}>"
+        return f"<Type: {self.type_}\tLiteral: {self.literal}>"

@@ -38,4 +38,5 @@ def repl():
                     token = lexer.next_token()
                     print(token)
 
-repl()
+# repl()
+read_file("source.talon")
