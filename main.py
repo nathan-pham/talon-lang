@@ -1,6 +1,8 @@
 from language.Lexer import Lexer
 from language.Parser import Parser
 
+from utils.JSON import JSON
+
 import platform
 
 pkg_name = "Talon"
@@ -13,7 +15,8 @@ def read_file(path):
         lexer = Lexer(file_contents)
         parser = Parser(lexer)
         program = parser.parse_program()
-        print(program)
+        for statement in program.statements:
+            print(JSON.serialize(statement))
         file.close()
 
 def repl():
