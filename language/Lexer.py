@@ -1,6 +1,6 @@
 from language.Token import *
 
-# lexer class
+# Lexer class
 class Lexer:
 
     input_ = ""
@@ -9,9 +9,9 @@ class Lexer:
     position = 0
     read_position = 0
     
-    # Lexer constructor
+    # constructor
     def __init__(self, input_):
-        self.input_ = input_
+        self.input_ = input_ + "\n" # pad input
         self.read_char()
 
     # see next character (if any) from input
@@ -21,15 +21,12 @@ class Lexer:
     # read character from input
     def read_char(self):
 
-        # read the character; if EOF then set character to 0
+        # read the character, if EOF character -> 0
         self.char = 0 if self.read_position >= len(self.input_) else self.input_[self.read_position]
 
-        # save read_position and increment by 1
+        # increment read_position
         self.position = self.read_position
         self.read_position += 1
-
-    def back_track(self):
-        self.read_position = self.position
 
     # read identifier from input
     def read_identifier(self):
@@ -40,8 +37,6 @@ class Lexer:
         # increment position while next token is a letter
         while self.char.isalnum() or self.char == "_": self.read_char()
         self.read_position = self.position
-
-        # return identifier
         return self.input_[position:self.position]
 
     # read number from input
@@ -53,8 +48,6 @@ class Lexer:
         # increment position while next token is a digit
         while self.char.isnumeric(): self.read_char()
         self.read_position = self.position
-
-        # return number
         return self.input_[position:self.position]
 
     # get the next token

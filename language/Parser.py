@@ -3,6 +3,16 @@ from language.Lexer import Lexer
 from language.Token import *
 from language.ast import *
 
+# precedence
+LOWEST = "LOWEST"
+EQUALS = "EQUALS"
+LESSGREATER = "LESS_GREATER"
+SUM = "SUM"
+PRODUCT = "PRODUCT"
+PREFIX = "PREFIX"
+CALL = "CALL"
+
+# Parser class
 class Parser:
 
     current_token = 0
@@ -11,15 +21,29 @@ class Parser:
 
     errors = []
 
+    prefix_parse_fns = {}
+    infix_parse_fns = {}
+
+    # constructor
     def __init__(self, lexer):
         self.lexer = lexer
 
+        self.register_prefix(IDENT, self.parse_identifier)
+
         self.next_token()
         self.next_token()
 
+    # retrieve the next token
     def next_token(self):
         self.current_token = self.peek_token
         self.peek_token = self.lexer.next_token()
+
+    # register a prefix or infix
+    def register_prefix(self, type_, fn):
+        self.prefix_parse_fns[type_] = fn
+
+    def register_infix(self, type_, fn):
+        self.infix_parse_fns[type_] = fn
 
     def parse_program(self):
         program = Program()
@@ -31,14 +55,27 @@ class Parser:
             self.next_token()
 
         return program
+        
+    # parse expressions
+    def parse_expression(self, precedence):
+        prefix = self.prefix_parse_fns.get(self.current_token.type_)
+        if not prefix: return None
+        left_expression = prefix()
 
-    # parsing methods
+        return left_expression
+
+    def parse_identifier(self):
+        return Identifier(self.current_token, self.current_token.literal)
+
+    # parse statements
     def parse_statement(self):
 
         if self.current_token.type_ == LET:
             return self.parse_let_statement()
+        elif self.current_token.type_ == RETURN:
+            return self.parse_return_statement()
 
-        return None
+        return self.parse_expression_statement()
 
     def parse_let_statement(self):
         stmt = LetStatement(self.current_token)
@@ -53,6 +90,25 @@ class Parser:
 
         # TODO: parse expression, for now just skip to semicolon
         while not self.current_token_is(SEMICOLON):
+            self.next_token()
+
+        return stmt
+    
+    def parse_return_statement(self):
+        stmt = ReturnStatement(self.current_token)
+
+        self.next_token()
+
+        # TODO: parse expression, for now just skip to semicolon
+        while not self.current_token_is(SEMICOLON):
+            self.next_token()
+
+        return stmt
+
+    def parse_expression_statement(self):
+        stmt = ExpressionStatement(self.current_token, self.parse_expression(LOWEST))
+
+        if self.peek_token_is(SEMICOLON):
             self.next_token()
 
         return stmt

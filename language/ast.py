@@ -1,15 +1,3 @@
-class Node:
-    def token_literal(self):
-        pass
-
-class Statement(Node):
-    def statement_node(self):
-        pass
-
-class Expression(Node):
-    def expression_node(self):
-        pass
-
 class Program:
 
     statements = []
@@ -20,7 +8,35 @@ class Program:
         else:
             return None
 
-class LetStatement:
+class Node:
+    def token_literal(self):
+        return self.token.literal
+
+    def __str__(self):
+        return self.token_literal()
+
+class Statement(Node):
+    def statement_node(self):
+        pass
+
+class Expression(Node):
+    value = None
+    token = None
+
+    def expression_node(self):
+        pass
+
+class ExpressionStatement(Statement):
+    def __init__(self, token, expression=None):
+        self.token = token
+        self.expression = expression
+
+class ReturnStatement(Statement):
+    def __init__(self, token, return_value=None):
+        self.token = token
+        self.return_value = return_value
+
+class LetStatement(Statement):
     def __init__(self, token, name=None, value=None):
         self.token = token
         self.name = name
@@ -29,16 +45,7 @@ class LetStatement:
     def statement_node(self):
         pass
 
-    def token_literal(self):
-        return self.token.literal
-
-class Identifier:
+class Identifier(Expression):
     def __init__(self, token, value):
         self.token = token
         self.value = value
-
-    def expression_node(self):
-        pass
-
-    def token_literal(self):
-        return self.token.literal
