@@ -60,4 +60,4 @@ class Token:
         self.literal = literal
     
     def __str__(self):
-        return f"<{self.type} {self.literal}>"
+        return f"<Type: {self.type}\tLiteral: {self.literal}>"
