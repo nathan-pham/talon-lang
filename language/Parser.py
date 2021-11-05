@@ -9,6 +9,8 @@ class Parser:
     peek_token = 0
     lexer = None
 
+    errors = []
+
     def __init__(self, lexer):
         self.lexer = lexer
 
@@ -30,7 +32,9 @@ class Parser:
 
         return program
 
+    # parsing methods
     def parse_statement(self):
+
         if self.current_token.type_ == LET:
             return self.parse_let_statement()
 
@@ -53,6 +57,7 @@ class Parser:
 
         return stmt
 
+    # assertion methods
     def current_token_is(self, type_):
         return self.current_token.type_ == type_
 
@@ -64,4 +69,9 @@ class Parser:
             self.next_token()
             return True
         else:
+            self.peek_error(type_)
             return False
+
+    # error handling
+    def peek_error(self, type_):
+        self.errors.append(f"expected next token to be {type_}, got {self.peek_token.type_} instead")

@@ -17,6 +17,7 @@ def read_file(path):
         program = parser.parse_program()
         for statement in program.statements:
             print(JSON.serialize(statement))
+        print(parser.errors)
         file.close()
 
 def repl():
