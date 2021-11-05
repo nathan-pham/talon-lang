@@ -19,6 +19,8 @@ class Node:
 
 # Node -> Statement class
 class Statement(Node):
+    token = None
+
     def statement_node(self):
         pass
 
@@ -63,9 +65,13 @@ class Identifier(Expression):
 
 # Node -> Expression -> IntegerLiteral class
 class IntegerLiteral(Expression):
-    token = None
-    value = None
-
     def __init__(self, token, value=None):
         self.token = token
         self.value = value
+
+# Node -> Expression -> PrefixExpression class
+class PrefixExpression(Expression):
+    def __init__(self, token, operator, right=None):
+        self.token = token
+        self.operator = operator
+        self.right = right

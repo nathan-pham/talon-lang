@@ -29,6 +29,9 @@ class Parser:
         self.lexer = lexer
 
         self.register_prefix(IDENT, self.parse_identifier)
+        self.register_prefix(INT, self.parse_integer_iteral)
+        self.register_prefix(BANG, self.parse_prefix_expression)
+        self.register_prefix(MINUS, self.parse_prefix_expression)
 
         self.next_token()
         self.next_token()
@@ -59,13 +62,34 @@ class Parser:
     # parse expressions
     def parse_expression(self, precedence):
         prefix = self.prefix_parse_fns.get(self.current_token.type_)
-        if not prefix: return None
+        
+        if not prefix:
+            self.no_prefix_parse_fn_error(self.current_token.type_)
+            return None
+
         left_expression = prefix()
 
         return left_expression
 
+    def parse_prefix_expression(self):
+        expression = PrefixExpression(self.current_token, self.current_token.literal)
+        
+        self.next_token()
+        expression.right = self.parse_expression(PREFIX)
+        
+        return expression
+
+    # parse literals
     def parse_identifier(self):
         return Identifier(self.current_token, self.current_token.literal)
+
+    def parse_integer_iteral(self):
+        try: 
+            literal = IntegerLiteral(self.current_token, int(self.current_token.literal))
+            return literal
+        except:
+            self.errors.append(f"could not parse {self.current_token.literal} as an integer")
+            return None
 
     # parse statements
     def parse_statement(self):
@@ -131,3 +155,6 @@ class Parser:
     # error handling
     def peek_error(self, type_):
         self.errors.append(f"expected next token to be {type_}, got {self.peek_token.type_} instead")
+
+    def no_prefix_parse_fn_error(self, type_):
+        self.errors.append(f"no prefix parse function for {type_} found")
