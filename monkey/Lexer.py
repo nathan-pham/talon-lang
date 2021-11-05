@@ -41,11 +41,23 @@ class Lexer:
         # return identifier
         return self.input[position:self.position]
 
+    # read number from input
+    def read_number(self):
+
+        # cache position
+        position = self.position
+
+        # increment position while next token is a digit
+        while is_digit(self.char): self.read_char()
+        
+        # return number
+        return self.input[position:self.position]
+
     # get the next token
     def next_token(self):
 
         self.skip_whitespace()
-
+        
         tokens = {
             "=": Token(ASSIGN, self.char),
             ";": Token(SEMICOLON, self.char),
@@ -55,19 +67,30 @@ class Lexer:
             "+": Token(PLUS, self.char),
             "{": Token(LBRACE, self.char),
             "}": Token(RBRACE, self.char),
+            "-": Token(MINUS, self.char),
+            "!": Token(BANG, self.char),
+            "*": Token(ASTERISK, self.char),
+            "/": Token(SLASH, self.char),
+            "<": Token(LT, self.char),
+            ">": Token(GT, self.char),
             0:   Token(EOF, "")
         }
 
         def default():
+
             if is_letter(self.char):
                 literal = self.read_identifier()
                 ident_type = lookup_ident(literal)
                 return Token(ident_type, literal)
+
+            elif is_digit(self.char):
+                return Token(INT, self.read_number())
+
             else:
-                print(self.position)
+                print('hmmm' + self.char)
                 return Token(ILLEGAL, self.char)
 
-        token = tokens.get(self.char, default())
+        token = tokens[self.char] if self.char in tokens else default()
         self.read_char()
         return token
 

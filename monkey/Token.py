@@ -8,6 +8,13 @@ INT = "INT"
 # operations
 ASSIGN = "="
 PLUS = "+"
+MINUS = "-"
+BANG = "!"
+ASTERISK = "*"
+SLASH = "/"
+
+LT = "<"
+GT = ">"
 
 # delimiters
 COMMA = ","
@@ -21,15 +28,25 @@ RBRACE = "}"
 # keywords
 FUNCTION = "FUNCTION"
 LET = "LET"
+TRUE = "TRUE"
+FALSE = "FALSE"
+IF = "IF"
+ELSE = "ELSE"
+RETURN = "RETURN"
 
 def lookup_ident(ident):
 
     keywords = {
         "fn": FUNCTION,
-        "let": LET
+        "let": LET,
+        "true": TRUE,
+        "false": FALSE,
+        "if": IF,
+        "else": ELSE,
+        "return": RETURN
     }
 
-    return keywords.get(ident, ident)
+    return keywords.get(ident, IDENT)
 
 # Token class
 class Token:
