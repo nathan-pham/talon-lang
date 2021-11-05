@@ -75,3 +75,11 @@ class PrefixExpression(Expression):
         self.token = token
         self.operator = operator
         self.right = right
+
+# Node -> Expression -> InfixExpression class
+class InfixExpression(Expression):
+    def __init__(self, token, left, operator, right=None):
+        self.token = token
+        self.left = left
+        self.operator = operator
+        self.right = right
