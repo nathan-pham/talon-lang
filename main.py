@@ -3,7 +3,6 @@ from monkey.Lexer import Lexer
 with open("source.monkey") as file:
     file_contents = file.read().strip()
     
-
     tokens = []
 
     lexer = Lexer(file_contents)

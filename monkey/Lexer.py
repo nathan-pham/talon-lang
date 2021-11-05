@@ -19,6 +19,10 @@ class Lexer:
         self.input = input
         self.read_char()
 
+    # see next character (if any) from input
+    def peek_char(self):
+        return 0 if self.read_position >= len(self.input) else self.input[self.read_position]
+
     # read character from input
     def read_char(self):
 
@@ -58,39 +62,53 @@ class Lexer:
 
         self.skip_whitespace()
         
-        tokens = {
-            "=": Token(ASSIGN, self.char),
-            ";": Token(SEMICOLON, self.char),
-            "(": Token(LPAREN, self.char),
-            ")": Token(RPAREN, self.char),
-            ",": Token(COMMA, self.char),
-            "+": Token(PLUS, self.char),
-            "{": Token(LBRACE, self.char),
-            "}": Token(RBRACE, self.char),
-            "-": Token(MINUS, self.char),
-            "!": Token(BANG, self.char),
-            "*": Token(ASTERISK, self.char),
-            "/": Token(SLASH, self.char),
-            "<": Token(LT, self.char),
-            ">": Token(GT, self.char),
-            0:   Token(EOF, "")
-        }
+        token = Token(ILLEGAL, self.char)
 
-        def default():
+        match self.char:
+            # double character tokens
+            case "=":
+                if self.peek_char() == "=":
+                    char = self.char
+                    self.read_char()             
+                    token = Token(EQ, char + self.char)
+                else:
+                    token = Token(ASSIGN, self.char)
+            case "!":
+                if self.peek_char() == "=":
+                    char = self.char
+                    self.read_char()
+                    token = Token(NOT_EQ, char + self.char)
+                else:
+                    token = Token(BANG, self.char)
 
-            if is_letter(self.char):
-                literal = self.read_identifier()
-                ident_type = lookup_ident(literal)
-                return Token(ident_type, literal)
+            # single character tokens
+            case ";": token = Token(SEMICOLON, self.char)
+            case "(": token = Token(LPAREN, self.char)
+            case ")": token = Token(RPAREN, self.char)
+            case "{": token = Token(LBRACE, self.char)
+            case "}": token = Token(RBRACE, self.char)
+            case ",": token = Token(COMMA, self.char)
+            case "+": token = Token(PLUS, self.char)
+            case "-": token = Token(MINUS, self.char)
+            case "*": token = Token(ASTERISK, self.char)
+            case "/": token = Token(SLASH, self.char)
+            case "<": token = Token(LT, self.char)
+            case ">": token = Token(GT, self.char)
 
-            elif is_digit(self.char):
-                return Token(INT, self.read_number())
+            # identifier or number tokens
+            case _:
+                if is_letter(self.char):
+                    literal = self.read_identifier()
+                    ident_type = lookup_ident(literal)
+                    token = Token(ident_type, literal)
 
-            else:
-                print('hmmm' + self.char)
-                return Token(ILLEGAL, self.char)
+                elif is_digit(self.char):
+                    token = Token(INT, self.read_number())
 
-        token = tokens[self.char] if self.char in tokens else default()
+                else:
+                    print('hmmm' + self.char)
+                    token = Token(ILLEGAL, self.char)
+
         self.read_char()
         return token
 
