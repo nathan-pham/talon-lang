@@ -1,4 +1,4 @@
-from monkey.Token import *
+from language.Token import *
 
 def is_letter(char):
     return ("a" <= char and char <= "z") or ("A" <= char and char <= "Z") or char == "_"

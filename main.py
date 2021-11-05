@@ -1,4 +1,9 @@
-from monkey.Lexer import Lexer
+from language.Lexer import Lexer
+
+import platform
+
+pkg_name = "Talon"
+version = "0.0.1"
 
 def read_file(path):
     with open(path, "r") as file:
@@ -13,11 +18,8 @@ def read_file(path):
         file.close()
 
 def repl():
-    import platform
 
-    version = "1.0.0"
-
-    print(f"Monkey {version} on {platform.platform()}")
+    print(f"{pkg_name} {version} on {platform.platform()}")
     print('Type "help", "copyright", "credits" or "license" for more information.')
 
     should_exit = False
@@ -25,14 +27,15 @@ def repl():
     while not should_exit:
         input_string = input(">>> ")
 
-        if input_string == "exit()":
-            should_exit = True
+        match input_string:
+            case ".exit":
+                should_exit = True
 
-        else:
-            lexer = Lexer(input_string)
+            case _:
+                lexer = Lexer(input_string)
 
-            while lexer.char != 0:
-                token = lexer.next_token()
-                print(token)
+                while lexer.char != 0:
+                    token = lexer.next_token()
+                    print(token)
 
 repl()
