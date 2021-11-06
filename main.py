@@ -1,5 +1,6 @@
 from language.Lexer import Lexer
 from language.Parser import Parser
+from language.eval.Evaluator import eval
 
 from utils.JSON import JSON
 
@@ -42,9 +43,14 @@ def repl():
                     if len(parser.errors) > 0:
                         for error in parser.errors:
                             print(f"{error}")
+                    else:
+                        evaluated = eval(program)
+                        if evaluated is not None:
+                            print(evaluated.inspect())
+                    
 
         except KeyboardInterrupt:
-            print("keyboard interrupt")
+            print("\nkeyboard interrupt")
     
 repl()
 # read_file("source.talon")
