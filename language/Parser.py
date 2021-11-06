@@ -248,9 +248,10 @@ class Parser:
         if not self.expect_peek(ASSIGN):
             return None
 
-        # TODO: parse expression, for now just skip to semicolon
-        while not self.current_token_is(SEMICOLON):
-            self.next_token()
+        self.next_token()
+
+        stmt.value = self.parse_expression(LOWEST)
+        if self.peek_token_is(SEMICOLON): self.next_token()
 
         return stmt
     
@@ -259,9 +260,8 @@ class Parser:
 
         self.next_token()
 
-        # TODO: parse expression, for now just skip to semicolon
-        while not self.current_token_is(SEMICOLON):
-            self.next_token()
+        stmt.return_value = self.parse_expression(LOWEST)
+        if self.peek_token_is(SEMICOLON): self.next_token()
 
         return stmt
 
