@@ -1,3 +1,4 @@
+from language.eval.Object import Error
 from language.Token import *
 
 # Lexer class
@@ -8,6 +9,8 @@ class Lexer:
     char = ""
     position = 0
     read_position = 0
+
+    errors = []
     
     # constructor
     def __init__(self, input_):
@@ -132,7 +135,7 @@ class Lexer:
                     token = Token(FLOAT if "." in number else INT, number)
 
                 else:
-                    print(f"LEXER ERROR: unexpected character {self.char}")
+                    self.errors.append(Error(f"Unexpected character {self.char}", "lexer"))
                     token = Token(ILLEGAL, self.char)
 
         self.read_char()

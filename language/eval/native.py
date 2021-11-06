@@ -13,6 +13,12 @@ def len_(*args):
 
     return Object.Error(f"argument to 'len' not supported, got: {args[0].type_}")
 
+def input_(*args):
+    error = argument_error(args, 1)
+    if error: return error
+
+    return Object.String(input(args[0].value))
+
 def print_(*args):
     for arg in args: print(arg.inspect())
     return NULL
@@ -55,8 +61,9 @@ native_functions = {
     # length of objects
     "len": Object.Native(len_),
 
-    # output to display
+    # IO
     "print": Object.Native(print_),
+    "input": Object.Native(input_),
 
     # loose type checking
     "str": Object.Native(str_),

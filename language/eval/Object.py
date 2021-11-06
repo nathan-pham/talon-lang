@@ -90,12 +90,13 @@ class ReturnValue(Object):
 
 # Object -> Error class
 class Error(Object):
-    def __init__(self, message):
+    def __init__(self, message, where="Interpreter"):
         self.message = message
         self.type_ = ERROR_OBJ
+        self.where = where.upper()
 
     def inspect(self):
-        return f"ERROR: {self.message}"
+        return f"\033[91m{self.where} ERROR\t{self.message}\x1b[0m"
 
 # Object -> Function class
 class Function(Object):

@@ -1,9 +1,9 @@
-from os import environ
 from language.Lexer import Lexer
 from language.Parser import Parser
 
 from language.eval.Environment import Environment
 from language.eval.evaluator import eval
+import language.eval.Object as Object
 
 from utils.JSON import JSON
 
@@ -18,12 +18,15 @@ def talon_lang(input_, environment, inspect=True):
     parser = Parser(lexer)
     program = parser.parse_program()
 
-    if len(parser.errors) > 0:
-        for error in parser.errors:
-            print(f"PARSER ERROR: {error}")
-    else:
+    errors = lexer.errors + parser.errors
+    print(errors)
+    for error in errors: print(error.inspect())
+
+    if len(errors) == 0:
         evaluated = eval(program, environment)
+        print(evaluated)
         if evaluated and inspect: print(evaluated.inspect())
+        elif isinstance(evaluated, Object.Error): print(evaluated.inspect())
 
 def repl():
     print(f"Welcome to {pkg_name} v{version} on {platform.platform()}")

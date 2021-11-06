@@ -1,5 +1,4 @@
-
-from language.Lexer import Lexer
+from language.eval.Object import Error
 from language.Token import *
 from language.ast import *
 
@@ -190,7 +189,7 @@ class Parser:
             literal = IntegerLiteral(self.current_token, int(self.current_token.literal))
             return literal
         except ValueError:
-            self.errors.append(f"could not parse {self.current_token.literal} as an integer")
+            self.errors.append(Error(f"could not parse {self.current_token.literal} as an integer", "parser"))
             return None
 
     def parse_float_literal(self):
@@ -198,7 +197,7 @@ class Parser:
             literal = FloatLiteral(self.current_token, float(self.current_token.literal))
             return literal
         except ValueError:
-            self.errors.append(f"could not parse {self.current_token.literal} as a float")
+            self.errors.append(Error(f"could not parse {self.current_token.literal} as a float", "parser"))
             return None
 
     def parse_boolean(self):
@@ -369,7 +368,7 @@ class Parser:
 
     # error handling
     def peek_error(self, type_):
-        self.errors.append(f"expected next token to be {type_} got {self.peek_token.type_} instead")
+        self.errors.append(Error(f"expected next token to be {type_}, got {self.peek_token.type_} instead", "parser"))
 
     def no_prefix_parse_fn_error(self, type_):
-        self.errors.append(f"no prefix parse function for {type_} found")
+        self.errors.append(Error(f"no prefix parse function for {type_} found", "parser"))
