@@ -9,6 +9,8 @@ class Program:
         else:
             return None
 
+# TODO: add str representation of all classes
+
 # Node class
 class Node:
     def token_literal(self):
@@ -120,3 +122,16 @@ class StringLiteral(Expression):
     def __init__(self, token, value=None):
         self.token = token
         self.value = value
+
+# Node -> Expression -> ArrayLiteral class
+class ArrayLiteral(Expression):
+    def __init__(self, token):
+        self.token = token
+        self.elements = []
+
+# Node -> Expression -> IndexExpression class
+class IndexExpression(Expression):
+    def __init__(self, token, left, index=None):
+        self.token = token
+        self.left = left
+        self.index = index

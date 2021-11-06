@@ -64,6 +64,19 @@ def eval(node, env):
 
     elif isinstance(node, StringLiteral): return Object.String(node.value)
 
+    elif isinstance(node, ArrayLiteral):
+        elements = eval_expressions(node.elements, env)
+        if len(elements) == 1 and is_error(elements[0]): return elements[0]
+        return Object.Array(elements)
+    elif isinstance(node, IndexExpression):
+        left = eval(node.left, env)
+        if is_error(left): return left
+
+        index = eval(node.index, env)
+        if is_error(index): return index
+
+        return eval_index_expression(left, index)
+
 def eval_program(program, env):
     result = None
 
@@ -186,3 +199,15 @@ def extend_function_env(function, arguments):
 
     for i in range(len(function.parameters)): env.set(function.parameters[i].value, arguments[i])
     return env
+
+def eval_index_expression(left, index):
+    if left.type_ == Object.ARRAY_OBJ and isinstance(index, Object.Number):
+        return eval_array_index_expression(left, index)
+    # elif left.type_ == Object.HASH_OBJ:
+    #     return eval_hash_index_expression(left, index)
+    else: return Object.Error(f"index operator not supported: {left.type_}")
+
+def eval_array_index_expression(left, index):
+    idx = index.value
+    if idx < 0 or idx >= len(left.elements): return NULL
+    return left.elements[idx]

@@ -11,6 +11,7 @@ NULL_OBJ = "NULL"
 RETURN_VALUE_OBJ = "RETURN_VALUE"
 FUNCTION_OBJ = "FUNCTION"
 STRING_OBJ = "STRING"
+ARRAY_OBJ = "ARRAY"
 
 ERROR_OBJ = "ERROR"
 
@@ -95,8 +96,10 @@ class Function(Object):
         self.type_ = FUNCTION_OBJ
 
     def inspect(self):
-        _parameters = ", ".join(self.parameters)
-        return f"fn({_parameters}) {{\n {self.body} \n}}"
+        _parameters = ", ".join([p.value for p in self.parameters])
+
+        # TODO: self.body -> actual statements, edit ast.py
+        return f"fn({_parameters}) {{\n ... \n}}"
 
 # Object -> String class
 class String(Object):
@@ -115,3 +118,13 @@ class Native(Object):
 
     def inspect(self):
         return f"[NATIVE_CODE]"
+
+# Object -> Array class
+class Array(Object):
+    def __init__(self, elements):
+        self.elements = elements
+        self.type_ = ARRAY_OBJ
+
+    def inspect(self):
+        _elements = ", ".join([str(e.inspect()) for e in self.elements])
+        return f"[{_elements}]"

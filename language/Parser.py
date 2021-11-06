@@ -11,6 +11,7 @@ SUM = 3
 PRODUCT = 4
 PREFIX = 5
 CALL = 6
+INDEX = 7
 
 precedences = {
     EQ:         EQUALS,
@@ -21,7 +22,8 @@ precedences = {
     MINUS:      SUM,
     SLASH:      PRODUCT,
     ASTERISK:   PRODUCT,
-    LPAREN:     CALL
+    LPAREN:     CALL,
+    LBRACKET:   INDEX
 }
 
 # Parser class
@@ -53,6 +55,7 @@ class Parser:
         self.register_prefix(IF, self.parse_if_expression)
         self.register_prefix(FUNCTION, self.parse_function_literal)
         self.register_prefix(STRING, self.parse_string_literal)
+        self.register_prefix(LBRACKET, self.parse_array_literal)
 
         self.register_infix(PLUS, self.parse_infix_expression)
         self.register_infix(MINUS, self.parse_infix_expression)
@@ -63,6 +66,7 @@ class Parser:
         self.register_infix(LT, self.parse_infix_expression)
         self.register_infix(GT, self.parse_infix_expression)
         self.register_infix(LPAREN, self.parse_call_expression)
+        self.register_infix(LBRACKET, self.parse_index_expression)
 
     # retrieve the next token
     def next_token(self):
@@ -160,8 +164,14 @@ class Parser:
     
     def parse_call_expression(self, function):
         expression = CallExpression(self.current_token, function)
-        expression.arguments = self.parse_call_arguments()
+        expression.arguments = self.parse_expression_list(RPAREN)
+        return expression
 
+    def parse_index_expression(self, left):
+        expression = IndexExpression(self.current_token, left)
+        self.next_token()
+        expression.index = self.parse_expression(LOWEST)
+        if not self.expect_peek(RBRACKET): return None
         return expression
 
     def parse_call_arguments(self):
@@ -239,6 +249,31 @@ class Parser:
 
     def parse_string_literal(self):
         return StringLiteral(self.current_token, self.current_token.literal)
+
+    def parse_array_literal(self):
+        array = ArrayLiteral(self.current_token)
+        array.elements = self.parse_expression_list(RBRACKET)
+        return array
+
+    def parse_expression_list(self, end):
+        list_ = []
+
+        if self.peek_token_is(end):
+            self.next_token()
+            return list_
+        
+        self.next_token()
+        list_.append(self.parse_expression(LOWEST))
+
+        while self.peek_token_is(COMMA):
+            self.next_token()
+            self.next_token()
+            list_.append(self.parse_expression(LOWEST))
+
+        if not self.expect_peek(end):
+            return None
+
+        return list_
     
     # parse statements
     def parse_statement(self):

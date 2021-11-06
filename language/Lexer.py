@@ -102,6 +102,8 @@ class Lexer:
             case "/": token = Token(SLASH, self.char)
             case "<": token = Token(LT, self.char)
             case ">": token = Token(GT, self.char)
+            case "[": token = Token(LBRACKET, self.char)
+            case "]": token = Token(RBRACKET, self.char)
 
             # end of input
             case 0: token = Token(EOF, self.char)
