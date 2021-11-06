@@ -1,4 +1,6 @@
 import language.eval.Object as Object
+
+from language.eval.native import native_functions
 from language.ast import *
 
 TRUE = Object.Boolean(True)
@@ -156,25 +158,30 @@ def eval_if_expression(ie, env):
 
 def eval_identifier(node, env):
     val = env.get(node.value)
-    return val if val else Object.Error(f"identifier not found: {node.value}")
+    if val: return val
+
+    native_fn = native_functions.get(node.value)
+    if native_fn: return native_fn
+
+    return Object.Error(f"identifier not found: {node.value}")
 
 def apply_function(function, arguments):
-    if not isinstance(function, Object.Function): return Object.Error(f"not a function: {function.type_}")
+    if isinstance(function, Object.Function): 
+        extendedEnv = extend_function_env(function, arguments)
+        if isinstance(extendedEnv, Object.Error): return extendedEnv
+        evaluated = eval(function.body, extendedEnv)
+        
+        return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated
 
-    extendedEnv = extend_function_env(function, arguments)
-    if isinstance(extendedEnv, Object.Error): return extendedEnv
-    evaluated = eval(function.body, extendedEnv)
-    
-    return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated
+    elif isinstance(function, Object.Native): return function.function(*arguments)
+
+    return Object.Error(f"not a function: {function.type_}")
 
 def extend_function_env(function, arguments):
     env = function.env.extend()
 
     if len(function.parameters) != len(arguments): 
-        past = "was" if len(arguments) == 1 else "were"
-        return Object.Error(f"wrong number of arguments: {len(function.parameters)} required but {len(arguments)} {past} given")
-
-        # missing 1 required positional argument
+        return Object.Error(f"wrong number of arguments: {len(function.parameters)} required but {len(arguments)} given")
 
     for i in range(len(function.parameters)): env.set(function.parameters[i].value, arguments[i])
     return env

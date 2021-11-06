@@ -9,6 +9,8 @@ STRING_OBJ = "STRING"
 
 ERROR_OBJ = "ERROR"
 
+NATIVE_OBJ = "NATIVE"
+
 # Object class
 class Object:
     def __init__(self):
@@ -81,3 +83,12 @@ class String(Object):
 
     def inspect(self):
         return f'"{self.value}"'
+
+# Object -> Native class
+class Native(Object):
+    def __init__(self, function):
+        self.function = function
+        self.type_ = NATIVE_OBJ
+
+    def inspect(self):
+        return f"[NATIVE_CODE]"
