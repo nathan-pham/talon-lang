@@ -75,19 +75,3 @@ native_functions = {
     "float": Object.Native(float_),
     "type": Object.Native(type_),
 }
-
-def split_(self):
-    def function(*args):
-        error = argument_error(args, 1)
-        if error: return error
-
-        if isinstance(args[0], Object.String): return Object.Array([Object.String(s) for s in self.value.split(args[0].value)])
-        return Object.Error(f"argument to 'split' not supported, got: {self.type_}")
-
-    return function
-
-prototype_functions = {
-    STRING: {
-        "split": lambda self: Object.Native(split_(self))
-    }
-}

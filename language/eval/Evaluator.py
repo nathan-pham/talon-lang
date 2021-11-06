@@ -1,8 +1,10 @@
 import language.eval.Object as Object
 
-from language.eval.native import native_functions, prototype_functions
+from language.eval.native import native_functions
 from language.Token import *
 from language.ast import *
+
+from utils.JSON import JSON
 
 TRUE = Object.Boolean(True)
 FALSE = Object.Boolean(False)
@@ -210,12 +212,14 @@ def eval_identifier(node, env):
     if native_fn: return native_fn
 
     if node.prototype:
-        prototype_fn = prototype_functions.get(node.prototype.token.type_).get(node.value)
-        return prototype_fn(node.prototype) if prototype_fn else Object.Error(f"identifier not found: {node.value}")
-
-    if node.prototype and hasattr(Object.String(node.prototype), node.prototype): return Object.String
+        prototype = eval(node.prototype, env)
     
-    # [node.prototype]
+        if hasattr(prototype, node.value):
+            return Object.Native(getattr(prototype, node.value))
+        return Object.Error(f"identifier not found: {node.value}")
+        # print(JSON.serialize(prototype))
+        # prototype_fn = (prototype_functions.get(.token.type_) or {}).get(node.value)
+        # return prototype_fn(node.prototype) if prototype_fn else 
 
     return Object.Error(f"identifier not found: {node.value}")
 

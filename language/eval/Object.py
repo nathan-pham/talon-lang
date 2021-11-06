@@ -144,6 +144,10 @@ class Array(Object):
         _elements = ", ".join([str(e.inspect()) for e in self.elements])
         return f"[{_elements}]"
 
+    def append(self, value):
+        self.elements.append(value)
+        return self
+
 # Object -> HashKey class
 class HashKey(Object):
     def __init__(self, type_, value):
