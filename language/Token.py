@@ -47,7 +47,7 @@ RETURN = "RETURN"
 def lookup_ident(ident):
 
     keywords = {
-        "fn": FUNCTION,
+        "function": FUNCTION,
         "let": LET,
         "true": TRUE,
         "false": FALSE,

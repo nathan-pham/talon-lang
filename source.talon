@@ -1,6 +1,6 @@
 let n = int(input("> "))
 
-let fib = fn(n) {
+let fib = function(n) {
     if (n <= 1) {
         return n
     } else {
