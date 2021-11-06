@@ -1,6 +1,8 @@
 from language.Lexer import Lexer
 from language.Parser import Parser
-from language.eval.Evaluator import eval
+
+from language.eval.Environment import Environment
+from language.eval.evaluator import eval
 
 from utils.JSON import JSON
 
@@ -26,6 +28,8 @@ def repl():
     print(f"{pkg_name} {version} on {platform.platform()}")
     print('Type "help", "copyright", "credits" or "license" for more information.')
 
+    environment = Environment()
+
     while True:
         try:
             input_ = input(">>> ")
@@ -43,11 +47,10 @@ def repl():
                         for error in parser.errors:
                             print(f"{error}")
                     else:
-                        evaluated = eval(program)
+                        evaluated = eval(program, environment)
                         if evaluated is not None:
                             print(evaluated.inspect())
                     
-
         except KeyboardInterrupt:
             print("\nkeyboardInterrupt")
     

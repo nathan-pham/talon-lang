@@ -20,55 +20,59 @@ def is_truthy(obj):
 def is_error(obj):
     return obj and obj.type_ == Object.ERROR_OBJ
 
-def eval(node):
-    if isinstance(node, Program): return eval_program(node)
-    elif isinstance(node, ExpressionStatement): return eval(node.expression)
+def eval(node, env):
+    if isinstance(node, Program): return eval_program(node, env)
+    elif isinstance(node, ExpressionStatement): return eval(node.expression, env)
     elif isinstance(node, IntegerLiteral): return Object.Integer(node.value)
     elif isinstance(node, Boolean): return native_bool_to_boolean_object(node.value)
 
     elif isinstance(node, PrefixExpression): 
-        right = eval(node.right)
+        right = eval(node.right, env)
         if is_error(right): return right
         return eval_prefix_expression(node.operator, right)
     elif isinstance(node, InfixExpression):
-        left = eval(node.left)
-        right = eval(node.right)
+        left = eval(node.left, env)
+        right = eval(node.right, env)
         if is_error(left): return left
         if is_error(right): return right
         return eval_infix_expression(node.operator, left, right)
 
-    elif isinstance(node, BlockStatement): return eval_block_statement(node)
-    elif isinstance(node, IfExpression): return eval_if_expression(node)
+    elif isinstance(node, BlockStatement): return eval_block_statement(node, env)
+    elif isinstance(node, IfExpression): return eval_if_expression(node, env)
 
     elif isinstance(node, ReturnStatement):
-        value = eval(node.return_value)
+        value = eval(node.return_value, env)
         if is_error(value): return value
         return Object.ReturnValue(value)
 
-def eval_program(program):
+    elif isinstance(node, LetStatement):
+        value = eval(node.value, env)
+        if is_error(value): return value
+
+def eval_program(program, env):
     result = None
 
     for stmt in program.statements:
-        result = eval(stmt)
+        result = eval(stmt, env)
         if isinstance(result, Object.ReturnValue): return result.value
         elif isinstance(result, Object.Error): return result
 
     return result
 
-def eval_block_statement(block):
+def eval_block_statement(block, env):
     result = None
 
     for stmt in block.statements:
-        result = eval(stmt)
+        result = eval(stmt, env)
         if result and (result.type_ == Object.RETURN_VALUE_OBJ or result.type_ == Object.ERROR_OBJ): return result
 
     return result
 
-def eval_statements(stmts):
+def eval_statements(stmts, env):
     result = None
 
     for stmt in stmts: 
-        result = eval(stmt)
+        result = eval(stmt, env)
         if isinstance(result, Object.ReturnValue): return result.value
 
     return result
@@ -100,30 +104,21 @@ def eval_infix_expression(operator, left, right):
 
 def eval_integer_infix_expression(operator, left, right):
     match operator:
-        case "+":
-            return Object.Integer(left.value + right.value)
-        case "-":
-            return Object.Integer(left.value - right.value)
-        case "*":
-            return Object.Integer(left.value * right.value)
-        case "/":
-            return Object.Integer(left.value / right.value)
-        case "<":
-            return native_bool_to_boolean_object(left.value < right.value)
-        case ">":
-            return native_bool_to_boolean_object(left.value > right.value)
-        case "==":
-            return native_bool_to_boolean_object(left.value == right.value)
-        case "!=":
-            return native_bool_to_boolean_object(left.value != right.value)
-        case _:
-            return NULL
+        case "+": return Object.Integer(left.value + right.value)
+        case "-": return Object.Integer(left.value - right.value)
+        case "*": return Object.Integer(left.value * right.value)
+        case "/": return Object.Integer(left.value / right.value)
+        case "<": return native_bool_to_boolean_object(left.value < right.value)
+        case ">": return native_bool_to_boolean_object(left.value > right.value)
+        case "==": return native_bool_to_boolean_object(left.value == right.value)
+        case "!=": return native_bool_to_boolean_object(left.value != right.value)
+        case _: return NULL
 
-def eval_if_expression(ie):
-    condition = eval(ie.condition)
+def eval_if_expression(ie, env):
+    condition = eval(ie.condition, env)
 
     if is_error(condition): return condition
 
-    if is_truthy(condition): return eval(ie.consequence)
-    elif ie.alternative != None: return eval(ie.alternative)
+    if is_truthy(condition): return eval(ie.consequence, env)
+    elif ie.alternative != None: return eval(ie.alternative, env)
     else: return NULL
