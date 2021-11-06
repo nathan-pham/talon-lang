@@ -175,6 +175,8 @@ def eval_number_infix_expression(operator, left, right):
         case "/": return Object.Number(left.value / right.value)
         case "<": return native_bool_to_boolean_object(left.value < right.value)
         case ">": return native_bool_to_boolean_object(left.value > right.value)
+        case "<=": return native_bool_to_boolean_object(left.value <= right.value)
+        case ">=": return native_bool_to_boolean_object(left.value >= right.value)
         case "==": return native_bool_to_boolean_object(left.value == right.value)
         case "!=": return native_bool_to_boolean_object(left.value != right.value)
         case _: return NULL

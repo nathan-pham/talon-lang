@@ -88,6 +88,20 @@ class Lexer:
                     token = Token(NOT_EQ, char + self.char)
                 else:
                     token = Token(BANG, self.char)
+            case "<":
+                if self.peek_char() == "=":
+                    char = self.char
+                    self.read_char()
+                    token = Token(LTE, char + self.char)
+                else:
+                    token = Token(LT, self.char)
+            case ">":
+                if self.peek_char() == "=":
+                    char = self.char
+                    self.read_char()
+                    token = Token(GTE, char + self.char)
+                else:
+                    token = Token(GT, self.char)
 
             # single character tokens
             case ":": token = Token(COLON, self.char)
@@ -101,8 +115,6 @@ class Lexer:
             case "-": token = Token(MINUS, self.char)
             case "*": token = Token(ASTERISK, self.char)
             case "/": token = Token(SLASH, self.char)
-            case "<": token = Token(LT, self.char)
-            case ">": token = Token(GT, self.char)
             case "[": token = Token(LBRACKET, self.char)
             case "]": token = Token(RBRACKET, self.char)
 

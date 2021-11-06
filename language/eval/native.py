@@ -13,7 +13,7 @@ def len_(*args):
 
     return Object.Error(f"argument to 'len' not supported, got: {args[0].type_}")
 
-def puts(*args):
+def print_(*args):
     for arg in args: print(arg.inspect())
     return NULL
 
@@ -56,7 +56,7 @@ native_functions = {
     "len": Object.Native(len_),
 
     # output to display
-    "puts": Object.Native(puts),
+    "print": Object.Native(print_),
 
     # loose type checking
     "str": Object.Native(str_),

@@ -18,6 +18,8 @@ precedences = {
     NOT_EQ:     EQUALS,
     LT:         LESSGREATER,
     GT:         LESSGREATER,
+    LTE:        LESSGREATER,
+    GTE:        LESSGREATER,
     PLUS:       SUM,
     MINUS:      SUM,
     SLASH:      PRODUCT,
@@ -67,6 +69,8 @@ class Parser:
         self.register_infix(NOT_EQ, self.parse_infix_expression)
         self.register_infix(LT, self.parse_infix_expression)
         self.register_infix(GT, self.parse_infix_expression)
+        self.register_infix(LTE, self.parse_infix_expression)
+        self.register_infix(GTE, self.parse_infix_expression)
         self.register_infix(LPAREN, self.parse_call_expression)
         self.register_infix(LBRACKET, self.parse_index_expression)
         self.register_infix(ASSIGN, self.parse_infix_expression)
