@@ -14,7 +14,7 @@ class Object:
 # Object -> Integer class
 class Integer(Object):
     def __init__(self, value):
-        self.value = value
+        self.value = int(value)
         self.type_ = INTEGER_OBJ
 
     def inspect(self):

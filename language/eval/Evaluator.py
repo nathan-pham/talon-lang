@@ -5,19 +5,25 @@ TRUE = Object.Boolean(True)
 FALSE = Object.Boolean(False)
 NULL = Object.Null()
 
+def native_bool_to_boolean_object(value):
+    if value:
+        return TRUE
+    else:
+        return FALSE
+
 def eval(node):
     if isinstance(node, Program): return eval_statements(node.statements)
     elif isinstance(node, ExpressionStatement): return eval(node.expression)
     elif isinstance(node, IntegerLiteral): return Object.Integer(node.value)
-    elif isinstance(node, Boolean): return TRUE if node.value else FALSE
+    elif isinstance(node, Boolean): return native_bool_to_boolean_object(node.value)
     elif isinstance(node, PrefixExpression): 
         right = eval(node.right)
         return eval_prefix_expression(node.operator, right)
-
     elif isinstance(node, InfixExpression):
         left = eval(node.left)
         right = eval(node.right)
         return eval_infix_expression(node.operator, left, right)
+    
 
 def eval_statements(stmts):
     result = None
@@ -44,6 +50,8 @@ def eval_minus_prefix_expression(right):
 def eval_infix_expression(operator, left, right):
     if isinstance(left, Object.Integer) and isinstance(right, Object.Integer):
         return eval_integer_infix_expression(operator, left, right)
+    elif operator == "==": return native_bool_to_boolean_object(left == right)
+    elif operator == "!=": return native_bool_to_boolean_object(left != right)
     else: return NULL
 
 def eval_integer_infix_expression(operator, left, right):
@@ -56,5 +64,13 @@ def eval_integer_infix_expression(operator, left, right):
             return Object.Integer(left.value * right.value)
         case "/":
             return Object.Integer(left.value / right.value)
+        case "<":
+            return native_bool_to_boolean_object(left.value < right.value)
+        case ">":
+            return native_bool_to_boolean_object(left.value > right.value)
+        case "==":
+            return native_bool_to_boolean_object(left.value == right.value)
+        case "!=":
+            return native_bool_to_boolean_object(left.value != right.value)
         case _:
             return NULL
