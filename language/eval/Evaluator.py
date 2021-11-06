@@ -121,7 +121,7 @@ def eval_minus_prefix_expression(right):
 
 def eval_infix_expression(operator, left, right):
     if isinstance(left, Object.Number) and isinstance(right, Object.Number):
-        return eval_integer_infix_expression(operator, left, right)
+        return eval_number_infix_expression(operator, left, right)
 
     elif operator == "==": return native_bool_to_boolean_object(left == right)
     elif operator == "!=": return native_bool_to_boolean_object(left != right)
@@ -132,7 +132,7 @@ def eval_infix_expression(operator, left, right):
     elif left.type_ != right.type_: return Object.Error(f"type mismatch: {left.type_} {operator} {right.type_}")
     else: return Object.Error(f"unknown operator: {left.type_} {operator} {right.type_}")
 
-def eval_integer_infix_expression(operator, left, right):
+def eval_number_infix_expression(operator, left, right):
     match operator:
         case "+": return Object.Number(left.value + right.value)
         case "-": return Object.Number(left.value - right.value)
