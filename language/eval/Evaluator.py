@@ -11,6 +11,12 @@ def native_bool_to_boolean_object(value):
     else:
         return FALSE
 
+def is_truthy(obj):
+    if obj == NULL: return False
+    elif obj == TRUE: return True
+    elif obj == FALSE: return False
+    else: return True
+
 def eval(node):
     if isinstance(node, Program): return eval_statements(node.statements)
     elif isinstance(node, ExpressionStatement): return eval(node.expression)
@@ -23,7 +29,8 @@ def eval(node):
         left = eval(node.left)
         right = eval(node.right)
         return eval_infix_expression(node.operator, left, right)
-    
+    elif isinstance(node, BlockStatement): return eval_statements(node.statements)
+    elif isinstance(node, IfExpression): return eval_if_expression(node)
 
 def eval_statements(stmts):
     result = None
@@ -74,3 +81,10 @@ def eval_integer_infix_expression(operator, left, right):
             return native_bool_to_boolean_object(left.value != right.value)
         case _:
             return NULL
+
+def eval_if_expression(ie):
+    condition = eval(ie.condition)
+
+    if is_truthy(condition): return eval(ie.consequence)
+    elif ie.alternative != None: return eval(ie.alternative)
+    else: return NULL

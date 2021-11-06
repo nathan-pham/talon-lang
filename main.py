@@ -5,7 +5,6 @@ from language.eval.Evaluator import eval
 from utils.JSON import JSON
 
 import platform
-import sys
 
 pkg_name = "Talon"
 version = "0.0.1"

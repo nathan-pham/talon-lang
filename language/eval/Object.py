@@ -27,7 +27,7 @@ class Boolean(Object):
         self.type_ = BOOLEAN_OBJ
 
     def inspect(self):
-        return self.value
+        return str(self.value).lower()
 
 # Object -> Null class
 class Null(Object):
