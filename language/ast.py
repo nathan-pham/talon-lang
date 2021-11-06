@@ -1,7 +1,8 @@
 # Talon Program class
 class Program:
 
-    statements = []
+    def __init__(self):
+        self.statements = []
 
     def token_literal(self):
         if len(self.statements) > 0:
@@ -26,8 +27,8 @@ class Statement(Node):
 
 # Node -> Expression class
 class Expression(Node):
-    value = None
     token = None
+    value = None
 
     def expression_node(self):
         pass
@@ -56,9 +57,9 @@ class LetStatement(Statement):
 
 # Node -> Statement -> BlockStatement class
 class BlockStatement(Statement):
-    def __init__(self, token, statements=[]):
+    def __init__(self, token):
         self.token = token
-        self.statements = statements
+        self.statements = []
 
 # Node -> Expression -> Identifier class
 class Identifier(Expression):
@@ -100,3 +101,10 @@ class IfExpression(Expression):
         self.condition = condition
         self.consequence = consequence
         self.alternative = alternative
+
+# Node -> Expression -> FunctionLiteral class
+class FunctionLiteral(Expression):
+    def __init__(self, token, body=None):
+        self.token = token
+        self.parameters = []
+        self.body = body

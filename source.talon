@@ -1,1 +1,1 @@
-if (x < y) { x } else { y }
+fn(x, y) { x + y; }

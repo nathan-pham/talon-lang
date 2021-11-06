@@ -26,18 +26,18 @@ precedences = {
 # Parser class
 class Parser:
 
-    current_token = 0
-    peek_token = 0
-    lexer = None
-
-    errors = []
-
-    prefix_parse_fns = {}
-    infix_parse_fns = {}
-
     # constructor
     def __init__(self, lexer):
         self.lexer = lexer
+
+        self.current_token = 0
+        self.peek_token = 0
+        self.next_token()
+        self.next_token()
+
+        self.errors = []
+        self.prefix_parse_fns = {}
+        self.infix_parse_fns = {}
 
         self.register_prefix(IDENT, self.parse_identifier)
         self.register_prefix(INT, self.parse_integer_iteral)
@@ -47,6 +47,7 @@ class Parser:
         self.register_prefix(FALSE, self.parse_boolean)
         self.register_prefix(LPAREN, self.parse_grouped_expression)
         self.register_prefix(IF, self.parse_if_expression)
+        self.register_prefix(FUNCTION, self.parse_function_literal)
 
         self.register_infix(PLUS, self.parse_infix_expression)
         self.register_infix(MINUS, self.parse_infix_expression)
@@ -56,9 +57,6 @@ class Parser:
         self.register_infix(NOT_EQ, self.parse_infix_expression)
         self.register_infix(LT, self.parse_infix_expression)
         self.register_infix(GT, self.parse_infix_expression)
-
-        self.next_token()
-        self.next_token()
 
     # retrieve the next token
     def next_token(self):
@@ -169,6 +167,38 @@ class Parser:
     def parse_boolean(self):
         return Boolean(self.current_token, self.current_token_is(TRUE))
 
+    def parse_function_literal(self):
+        literal = FunctionLiteral(self.current_token)
+
+        if not self.expect_peek(LPAREN): return None
+        literal.parameters = self.parse_function_parameters()
+
+        if not self.expect_peek(LBRACE): return None
+        literal.body = self.parse_block_statement()
+
+        return literal
+
+    def parse_function_parameters(self):
+        identifiers = []
+
+        if self.peek_token_is(RPAREN):
+            self.next_token()
+            return identifiers
+
+        self.next_token()
+
+        identifier = Identifier(self.current_token, self.current_token.literal)
+        identifiers.append(identifier)
+
+        while self.peek_token_is(COMMA):
+            self.next_token()
+            self.next_token()
+            identifier = Identifier(self.current_token, self.current_token.literal)
+            identifiers.append(identifier)
+
+        if not self.expect_peek(RPAREN): return None
+        return identifiers
+    
     # parse statements
     def parse_statement(self):
 
@@ -225,7 +255,7 @@ class Parser:
             if stmt != None:
                 block.statements.append(stmt)
             self.next_token()
-
+        
         return block
 
     # assertion methods
