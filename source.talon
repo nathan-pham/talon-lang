@@ -1,24 +1,12 @@
-{
-"5 + true;",
-"type mismatch: INTEGER + BOOLEAN",
-},
-{
-"5 + true; 5;",
-"type mismatch: INTEGER + BOOLEAN",
-},
-{
-"-true",
-"unknown operator: -BOOLEAN",
-},
-{
-"true + false;",
-"unknown operator: BOOLEAN + BOOLEAN",
-},
-{
-"5; true + false; 5",
-"unknown operator: BOOLEAN + BOOLEAN",
-},
-{
-"if (10 > 1) { true + false; }",
-"unknown operator: BOOLEAN + BOOLEAN",
-},
+let add = fn(x, y) { x + y }
+let array = [1, 2, 3, 4]
+puts(array)
+puts("bruh")
+
+let three = add(array[0], array[1])
+
+if (three > 1) {
+    puts("lmao")
+} else {
+    puts("ok less than three")
+}
