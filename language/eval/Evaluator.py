@@ -22,7 +22,8 @@ def is_error(obj):
 def eval(node, env):
     if isinstance(node, Program): return eval_program(node, env)
     elif isinstance(node, ExpressionStatement): return eval(node.expression, env)
-    elif isinstance(node, IntegerLiteral): return Object.Integer(node.value)
+    elif isinstance(node, IntegerLiteral): return Object.Number(int(node.value))
+    elif isinstance(node, FloatLiteral): return Object.Number(float(node.value))
     elif isinstance(node, Boolean): return native_bool_to_boolean_object(node.value)
 
     elif isinstance(node, PrefixExpression): 
@@ -115,11 +116,11 @@ def eval_bang_operator_expression(right):
     else: return FALSE
 
 def eval_minus_prefix_expression(right):
-    if right.type_ != Object.INTEGER_OBJ: return Object.Error(f"unknown operator: -{right.type_}")
-    return Object.Integer(-1 * right.value)
+    if right.type_ != Object.NUMBER_OBJ: return Object.Error(f"unknown operator: -{right.type_}")
+    return Object.Number(-1 * right.value)
 
 def eval_infix_expression(operator, left, right):
-    if isinstance(left, Object.Integer) and isinstance(right, Object.Integer):
+    if isinstance(left, Object.Number) and isinstance(right, Object.Number):
         return eval_integer_infix_expression(operator, left, right)
 
     elif operator == "==": return native_bool_to_boolean_object(left == right)
@@ -133,10 +134,10 @@ def eval_infix_expression(operator, left, right):
 
 def eval_integer_infix_expression(operator, left, right):
     match operator:
-        case "+": return Object.Integer(left.value + right.value)
-        case "-": return Object.Integer(left.value - right.value)
-        case "*": return Object.Integer(left.value * right.value)
-        case "/": return Object.Integer(left.value / right.value)
+        case "+": return Object.Number(left.value + right.value)
+        case "-": return Object.Number(left.value - right.value)
+        case "*": return Object.Number(left.value * right.value)
+        case "/": return Object.Number(left.value / right.value)
         case "<": return native_bool_to_boolean_object(left.value < right.value)
         case ">": return native_bool_to_boolean_object(left.value > right.value)
         case "==": return native_bool_to_boolean_object(left.value == right.value)

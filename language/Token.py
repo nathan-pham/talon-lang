@@ -4,6 +4,7 @@ EOF = "EOF"
 # identifiers and primary data types
 IDENT = "IDENT"
 INT = "INT"
+FLOAT = "FLOAT"
 STRING = "STRING"
 
 # operations
@@ -19,7 +20,6 @@ GT = ">"
 
 EQ = "=="
 NOT_EQ = "!="
-
 
 # delimiters
 COMMA = ","

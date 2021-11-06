@@ -46,7 +46,7 @@ class Lexer:
         position = self.position
 
         # increment position while next token is a digit
-        while self.char != 0 and self.char.isnumeric(): self.read_char()
+        while self.char != 0 and (self.char.isnumeric() or self.char == "."): self.read_char()
         self.read_position = self.position
         return self.input_[position:self.position]
 
@@ -113,7 +113,8 @@ class Lexer:
                     token = Token(lookup_ident(literal), literal)
 
                 elif self.char.isnumeric():
-                    token = Token(INT, self.read_number())
+                    number = self.read_number()
+                    token = Token(FLOAT if "." in number else INT, number)
 
                 else:
                     print('hmmm' + self.char)

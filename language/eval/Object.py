@@ -1,5 +1,10 @@
 # object types
+from language.Token import FLOAT
+
 INTEGER_OBJ = "INTEGER"
+FLOAT_OBJ = "FLOAT"
+NUMBER_OBJ = (INTEGER_OBJ, FLOAT_OBJ)
+
 BOOLEAN_OBJ = "BOOLEAN"
 NULL_OBJ = "NULL"
 
@@ -20,10 +25,28 @@ class Object:
         pass
 
 # Object -> Integer class
-class Integer(Object):
+# class Integer(Object):
+#     def __init__(self, value):
+#         self.value = int(value)
+#         self.type_ = NUMBER_OBJ
+
+#     def inspect(self):
+#         return self.value
+
+# Object -> Float class
+# class Float(Object):
+#     def __init__(self, value):
+#         self.value = float(value)
+#         self.type_ = NUMBER_OBJ
+
+#     def inspect(self):
+#         return self.value
+
+# Object -> Number class:
+class Number(Object):
     def __init__(self, value):
-        self.value = int(value)
-        self.type_ = INTEGER_OBJ
+        self.value = value
+        self.type_ = NUMBER_OBJ
 
     def inspect(self):
         return self.value

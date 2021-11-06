@@ -66,6 +66,12 @@ class IntegerLiteral(Expression):
         self.token = token
         self.value = value
 
+# Node -> Expression -> FloatLiteral class
+class FloatLiteral(Expression):
+    def __init__(self, token, value=None):
+        self.token = token
+        self.value = value
+
 # Node -> Expression -> Boolean class
 class Boolean(Expression):
     def __init__(self, token, value=None):

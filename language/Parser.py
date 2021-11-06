@@ -43,7 +43,8 @@ class Parser:
         self.infix_parse_fns = {}
 
         self.register_prefix(IDENT, self.parse_identifier)
-        self.register_prefix(INT, self.parse_integer_iteral)
+        self.register_prefix(INT, self.parse_integer_literal)
+        self.register_prefix(FLOAT, self.parse_float_literal)
         self.register_prefix(BANG, self.parse_prefix_expression)
         self.register_prefix(MINUS, self.parse_prefix_expression)
         self.register_prefix(TRUE, self.parse_boolean)
@@ -185,12 +186,20 @@ class Parser:
     def parse_identifier(self):
         return Identifier(self.current_token, self.current_token.literal)
 
-    def parse_integer_iteral(self):
+    def parse_integer_literal(self):
         try: 
             literal = IntegerLiteral(self.current_token, int(self.current_token.literal))
             return literal
-        except:
+        except ValueError:
             self.errors.append(f"could not parse {self.current_token.literal} as an integer")
+            return None
+
+    def parse_float_literal(self):
+        try:
+            literal = FloatLiteral(self.current_token, float(self.current_token.literal))
+            return literal
+        except ValueError:
+            self.errors.append(f"could not parse {self.current_token.literal} as a float")
             return None
 
     def parse_boolean(self):
