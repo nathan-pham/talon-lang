@@ -231,6 +231,6 @@ def eval_hash_index_expression(left, index):
     if not index.hashable(): return Object.Error(f"unusable as hash key: {hash.type_}")
 
     for key, value in left.pairs.items():
-        if key.value == index.value and key.type_ == index.type_: return value
+        if key.value == index.value and key.type_ == index.type_: return value.value
 
     return NULL
