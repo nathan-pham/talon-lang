@@ -20,7 +20,8 @@ precedences = {
     PLUS:       SUM,
     MINUS:      SUM,
     SLASH:      PRODUCT,
-    ASTERISK:   PRODUCT
+    ASTERISK:   PRODUCT,
+    LPAREN:     CALL
 }
 
 # Parser class
@@ -57,6 +58,7 @@ class Parser:
         self.register_infix(NOT_EQ, self.parse_infix_expression)
         self.register_infix(LT, self.parse_infix_expression)
         self.register_infix(GT, self.parse_infix_expression)
+        self.register_infix(LPAREN, self.parse_call_expression)
 
     # retrieve the next token
     def next_token(self):
@@ -151,6 +153,30 @@ class Parser:
             return None
 
         return expression
+    
+    def parse_call_expression(self, function):
+        expression = CallExpression(self.current_token, function)
+        expression.arguments = self.parse_call_arguments()
+
+        return expression
+
+    def parse_call_arguments(self):
+        arguments = []
+
+        if self.peek_token_is(RPAREN):
+            self.next_token()
+            return arguments
+
+        self.next_token()
+        arguments.append(self.parse_expression(LOWEST))
+
+        while self.peek_token_is(COMMA):
+            self.next_token()
+            self.next_token()
+            arguments.append(self.parse_expression(LOWEST))
+            
+        if not self.expect_peek(RPAREN): return None
+        return arguments
 
     # parse literals
     def parse_identifier(self):

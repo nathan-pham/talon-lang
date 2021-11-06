@@ -108,3 +108,10 @@ class FunctionLiteral(Expression):
         self.token = token
         self.parameters = []
         self.body = body
+
+# Node -> Expression -> CallExpression class
+class CallExpression(Expression):
+    def __init__(self, token, function=None):
+        self.token = token
+        self.function = function
+        self.arguments = []
