@@ -13,18 +13,26 @@ import sys
 pkg_name = "TalonLang"
 version = "0.0.1"
 
+"""
+TODO LIST
+
+1) "example string".split() // built in functions into objects
+2) comments
+3) loops & iterables
+4) import and export modules
+5) error handling around native functions
+"""
+
 def talon_lang(input_, environment, inspect=True):
     lexer = Lexer(input_)
     parser = Parser(lexer)
     program = parser.parse_program()
 
     errors = lexer.errors + parser.errors
-    print(errors)
     for error in errors: print(error.inspect())
 
     if len(errors) == 0:
         evaluated = eval(program, environment)
-        print(evaluated)
         if evaluated and inspect: print(evaluated.inspect())
         elif isinstance(evaluated, Object.Error): print(evaluated.inspect())
 
