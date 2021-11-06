@@ -14,6 +14,11 @@ def eval(node):
         right = eval(node.right)
         return eval_prefix_expression(node.operator, right)
 
+    elif isinstance(node, InfixExpression):
+        left = eval(node.left)
+        right = eval(node.right)
+        return eval_infix_expression(node.operator, left, right)
+
 def eval_statements(stmts):
     result = None
     for stmt in stmts: result = eval(stmt)
@@ -35,3 +40,21 @@ def eval_bang_operator_expression(right):
 def eval_minus_prefix_expression(right):
     if right.type_ != Object.INTEGER_OBJ: return NULL
     return Object.Integer(-1 * right.value)
+
+def eval_infix_expression(operator, left, right):
+    if isinstance(left, Object.Integer) and isinstance(right, Object.Integer):
+        return eval_integer_infix_expression(operator, left, right)
+    else: return NULL
+
+def eval_integer_infix_expression(operator, left, right):
+    match operator:
+        case "+":
+            return Object.Integer(left.value + right.value)
+        case "-":
+            return Object.Integer(left.value - right.value)
+        case "*":
+            return Object.Integer(left.value * right.value)
+        case "/":
+            return Object.Integer(left.value / right.value)
+        case _:
+            return NULL
