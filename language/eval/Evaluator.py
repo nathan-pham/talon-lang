@@ -6,10 +6,7 @@ FALSE = Object.Boolean(False)
 NULL = Object.Null()
 
 def native_bool_to_boolean_object(value):
-    if value:
-        return TRUE
-    else:
-        return FALSE
+    return TRUE if value else FALSE
 
 def is_truthy(obj):
     if obj == NULL: return False
@@ -48,6 +45,9 @@ def eval(node, env):
     elif isinstance(node, LetStatement):
         value = eval(node.value, env)
         if is_error(value): return value
+        env.set(node.name.value, value)
+
+    elif isinstance(node, Identifier): return eval_identifier(node ,env)
 
 def eval_program(program, env):
     result = None
@@ -122,3 +122,7 @@ def eval_if_expression(ie, env):
     if is_truthy(condition): return eval(ie.consequence, env)
     elif ie.alternative != None: return eval(ie.alternative, env)
     else: return NULL
+
+def eval_identifier(node, env):
+    val = env.get(node.value)
+    return val if val else Object.Error(f"identifier not found: {node.value}")
