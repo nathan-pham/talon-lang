@@ -47,7 +47,17 @@ def eval(node, env):
         if is_error(value): return value
         env.set(node.name.value, value)
 
-    elif isinstance(node, Identifier): return eval_identifier(node ,env)
+    elif isinstance(node, Identifier): return eval_identifier(node, env)
+
+    elif isinstance(node, FunctionLiteral): return Object.Function(node.parameters, node.body, env)
+    elif isinstance(node, CallExpression):
+        function = eval(node.function, env)
+        if is_error(function): return function
+
+        arguments = eval_expressions(node.arguments, env)
+        if len(arguments) == 1 and is_error(arguments[0]): return arguments[0]
+
+        return apply_function(function, arguments)
 
 def eval_program(program, env):
     result = None
@@ -56,6 +66,15 @@ def eval_program(program, env):
         result = eval(stmt, env)
         if isinstance(result, Object.ReturnValue): return result.value
         elif isinstance(result, Object.Error): return result
+
+    return result
+
+def eval_statements(stmts, env):
+    result = None
+
+    for stmt in stmts: 
+        result = eval(stmt, env)
+        if isinstance(result, Object.ReturnValue): return result.value
 
     return result
 
@@ -68,12 +87,13 @@ def eval_block_statement(block, env):
 
     return result
 
-def eval_statements(stmts, env):
-    result = None
+def eval_expressions(expressions, env):
+    result = []
 
-    for stmt in stmts: 
-        result = eval(stmt, env)
-        if isinstance(result, Object.ReturnValue): return result.value
+    for expr in expressions:
+        evaluated = eval(expr, env)
+        if is_error(evaluated): return [evaluated]
+        result.append(evaluated)
 
     return result
 
@@ -126,3 +146,20 @@ def eval_if_expression(ie, env):
 def eval_identifier(node, env):
     val = env.get(node.value)
     return val if val else Object.Error(f"identifier not found: {node.value}")
+
+def apply_function(function, arguments):
+    if not isinstance(function, Object.Function): return Object.Error(f"not a function: {function.type_}")
+
+    extendedEnv = extend_function_env(function, arguments)
+    evaluated = eval(function.body, extendedEnv)
+
+    return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated
+
+def extend_function_env(function, arguments):
+    env = function.env.extend()
+
+    if len(function.parameters) != len(arguments): 
+        return Object.Error(f"wrong number of arguments: required {len(function.parameters)}, given {len(arguments)}")
+
+    for i in range(len(function.parameters)): env.set(function.parameters[i].value, arguments[i])
+    return env

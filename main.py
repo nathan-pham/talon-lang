@@ -8,7 +8,7 @@ from utils.JSON import JSON
 
 import platform
 
-pkg_name = "Talon"
+pkg_name = "TalonLang"
 version = "0.0.1"
 
 def read_file(path):
@@ -25,8 +25,8 @@ def read_file(path):
 
 def repl():
 
-    print(f"{pkg_name} {version} on {platform.platform()}")
-    print('Type "help", "copyright", "credits" or "license" for more information.')
+    print(f"Welcome to {pkg_name} v{version} on {platform.platform()}")
+    print('Type ".help" for more information.')
 
     environment = Environment()
 
@@ -34,23 +34,36 @@ def repl():
         try:
             input_ = input(">>> ")
 
-            match input_:
-                case ".exit":
-                    break
+            if(input_.startswith(".")):
 
-                case _:
-                    lexer = Lexer(input_)
-                    parser = Parser(lexer)
-                    program = parser.parse_program()
+                match input_:
+                    case ".help":
+                        print("\n".join([
+                            ".exit\texit the REPL",
+                            ".help\tprint this help message",
+                            ".load\tload TalonLang from a file into the REPL session",
+                            ".save\tsave all evaluated commands in this REPL session to a file"
+                        ]))
 
-                    if len(parser.errors) > 0:
-                        for error in parser.errors:
-                            print(f"{error}")
-                    else:
-                        evaluated = eval(program, environment)
-                        if evaluated is not None:
-                            print(evaluated.inspect())
-                    
+                    case ".exit":
+                        break
+
+                    case _:
+                        print("invalid REPL keyword")
+
+            else:
+                lexer = Lexer(input_)
+                parser = Parser(lexer)
+                program = parser.parse_program()
+
+                if len(parser.errors) > 0:
+                    for error in parser.errors:
+                        print(f"ERROR: {error}")
+                else:
+                    evaluated = eval(program, environment)
+                    if evaluated is not None:
+                        print(evaluated.inspect())
+
         except KeyboardInterrupt:
             print("\nkeyboardInterrupt")
     

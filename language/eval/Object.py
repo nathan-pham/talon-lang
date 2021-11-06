@@ -4,6 +4,7 @@ BOOLEAN_OBJ = "BOOLEAN"
 NULL_OBJ = "NULL"
 
 RETURN_VALUE_OBJ = "RETURN_VALUE"
+FUNCTION_OBJ = "FUNCTION"
 
 ERROR_OBJ = "ERROR"
 
@@ -58,3 +59,15 @@ class Error(Object):
 
     def inspect(self):
         return f"ERROR: {self.message}"
+
+# Object -> Function class
+class Function(Object):
+    def __init__(self, parameters, body, env):
+        self.parameters = parameters
+        self.body = body
+        self.env = env
+        self.type_ = FUNCTION_OBJ
+
+    def inspect(self):
+        _parameters = ", ".join(self.parameters)
+        return f"fn({_parameters}) {{\n {self.body} \n}}"
