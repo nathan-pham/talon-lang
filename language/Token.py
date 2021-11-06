@@ -69,3 +69,12 @@ class Token:
     # represent token as a str
     def __str__(self):
         return f"<Type: {self.type_}\tLiteral: {self.literal}>"
+
+"""
+How to extend langauge:
+1) create new token (ie: keyword)
+2) add token to lexer in the match/case statement
+3) create a class in ast.py to represent as object
+4) register prefix or infix in Parser.py
+5) extend evaluator by checking for presence of object
+"""
