@@ -54,8 +54,11 @@ class LetStatement(Statement):
         self.name = name
         self.value = value
 
-    def statement_node(self):
-        pass
+# Node -> Statement -> BlockStatement class
+class BlockStatement(Statement):
+    def __init__(self, token, statements=[]):
+        self.token = token
+        self.statements = statements
 
 # Node -> Expression -> Identifier class
 class Identifier(Expression):
@@ -92,7 +95,7 @@ class InfixExpression(Expression):
 
 # Node -> Expression -> IfExpression class
 class IfExpression(Expression):
-    def __init__(self, token, condition, consequence, alternative):
+    def __init__(self, token, condition=None, consequence=None, alternative=None):
         self.token = token
         self.condition = condition
         self.consequence = consequence

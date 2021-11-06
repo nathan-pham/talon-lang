@@ -1,85 +1,195 @@
-1 + 2 / 3
-
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "1",
-                "type_": "INT"
-            },
-            "value": 1
-        },
-        "operator": "+",
-        "right": {
-            "left": {
-                "token": {
-                    "literal": "2",
-                    "type_": "INT"
+[
+    {
+        "expression": {
+            "alternative": null,
+            "condition": {
+                "left": {
+                    "token": {
+                        "literal": "x",
+                        "type_": "IDENT"
+                    },
+                    "value": "x"
                 },
-                "value": 2
-            },
-            "operator": "/",
-            "right": {
-                "token": {
-                    "literal": "3",
-                    "type_": "INT"
+                "operator": "<",
+                "right": {
+                    "token": {
+                        "literal": "y",
+                        "type_": "IDENT"
+                    },
+                    "value": "y"
                 },
-                "value": 3
+                "token": {
+                    "literal": "<",
+                    "type_": "<"
+                }
+            },
+            "consequence": {
+                "statements": [
+                    {
+                        "expression": {
+                            "token": {
+                                "literal": "x",
+                                "type_": "IDENT"
+                            },
+                            "value": "x"
+                        },
+                        "token": {
+                            "literal": "x",
+                            "type_": "IDENT"
+                        }
+                    }
+                ],
+                "token": {
+                    "literal": "{",
+                    "type_": "{"
+                }
             },
             "token": {
-                "literal": "/",
-                "type_": "/"
+                "literal": "if",
+                "type_": "IF"
             }
         },
         "token": {
-            "literal": "+",
-            "type_": "+"
+            "literal": "if",
+            "type_": "IF"
         }
     },
-    "token": {
-        "literal": "1",
-        "type_": "INT"
-    }
-}
-
-{
-    "expression": {
-        "left": {
-            "left": {
-                "token": {
-                    "literal": "1",
-                    "type_": "INT"
-                },
-                "value": 1
-            },
-            "operator": "+",
-            "right": {
-                "token": {
-                    "literal": "2",
-                    "type_": "INT"
-                },
-                "value": 2
-            },
+    {
+        "expression": null,
+        "token": {
+            "literal": "else",
+            "type_": "ELSE"
+        }
+    },
+    {
+        "expression": null,
+        "token": {
+            "literal": "{",
+            "type_": "{"
+        }
+    },
+    {
+        "expression": {
             "token": {
-                "literal": "+",
-                "type_": "+"
-            }
-        },
-        "operator": "/",
-        "right": {
-            "token": {
-                "literal": "3",
-                "type_": "INT"
+                "literal": "y",
+                "type_": "IDENT"
             },
-            "value": 3
+            "value": "y"
         },
         "token": {
-            "literal": "/",
-            "type_": "/"
+            "literal": "y",
+            "type_": "IDENT"
         }
     },
-    "token": {
-        "literal": "(",
-        "type_": "("
+        "expression": null,
+        "token": {
+            "literal": "}",
+            "type_": "}"
+        }
     }
-}
+]
+['no prefix parse function for ELSE found', 'no prefix parse function for { found', 'no prefix parse function for } found']
+PS C:\Users\nathan-pham\Desktop\projects\python-interpreter> py main.py
+[
+    {
+        "expression": {
+            "alternative": {
+                "statements": [
+                    {
+                        "expression": {
+                            "token": {
+                                "literal": "x",
+                                "type_": "IDENT"
+                            },
+                            "value": "x"
+                        },
+                        "token": {
+                            "literal": "x",
+                            "type_": "IDENT"
+                        }
+                    },
+                    {
+                        "expression": {
+                            "token": {
+                                "literal": "y",
+                                "type_": "IDENT"
+                            },
+                            "value": "y"
+                        },
+                        "token": {
+                            "literal": "y",
+                            "type_": "IDENT"
+                        }
+                    }
+                ],
+                "token": {
+                    "literal": "{",
+                    "type_": "{"
+                }
+            },
+            "condition": {
+                "left": {
+                    "token": {
+                        "literal": "x",
+                        "type_": "IDENT"
+                    },
+                    "value": "x"
+                },
+                "operator": "<",
+                "right": {
+                    "token": {
+                        "literal": "y",
+                        "type_": "IDENT"
+                    },
+                    "value": "y"
+                },
+                "token": {
+                    "literal": "<",
+                    "type_": "<"
+                }
+            },
+            "consequence": {
+                "statements": [
+                    {
+                        "expression": {
+                            "token": {
+                                "literal": "x",
+                                "type_": "IDENT"
+                            },
+                            "value": "x"
+                        },
+                        "token": {
+                            "literal": "x",
+                            "type_": "IDENT"
+                        }
+                    },
+                    {
+                        "expression": {
+                            "token": {
+                                "literal": "y",
+                                "type_": "IDENT"
+                            },
+                            "value": "y"
+                        },
+                        "token": {
+                            "literal": "y",
+                            "type_": "IDENT"
+                        }
+                    }
+                ],
+                "token": {
+                    "literal": "{",
+                    "type_": "{"
+                }
+            },
+            "token": {
+                "literal": "if",
+                "type_": "IF"
+            }
+        },
+        "token": {
+            "literal": "if",
+            "type_": "IF"
+        }
+    }
+]

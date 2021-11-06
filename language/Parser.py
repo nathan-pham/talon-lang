@@ -46,6 +46,7 @@ class Parser:
         self.register_prefix(TRUE, self.parse_boolean)
         self.register_prefix(FALSE, self.parse_boolean)
         self.register_prefix(LPAREN, self.parse_grouped_expression)
+        self.register_prefix(IF, self.parse_if_expression)
 
         self.register_infix(PLUS, self.parse_infix_expression)
         self.register_infix(MINUS, self.parse_infix_expression)
@@ -124,6 +125,35 @@ class Parser:
 
         return expression
 
+    def parse_if_expression(self):
+        expression = IfExpression(self.current_token)
+
+        if not self.expect_peek(LPAREN): return None
+
+        self.next_token()
+        expression.condition = self.parse_expression(LOWEST)
+
+        if not self.expect_peek(RPAREN): return None
+        if not self.expect_peek(LBRACE): return None
+
+        expression.consequence = self.parse_block_statement()
+
+        if self.peek_token_is(ELSE):
+            self.next_token()
+            if not self.expect_peek(LBRACE): return None
+            expression.alternative = self.parse_block_statement()
+
+        return expression
+
+    def parse_grouped_expression(self):
+        self.next_token()
+
+        expression = self.parse_expression(LOWEST)
+        if not self.expect_peek(RPAREN):
+            return None
+
+        return expression
+
     # parse literals
     def parse_identifier(self):
         return Identifier(self.current_token, self.current_token.literal)
@@ -185,14 +215,18 @@ class Parser:
 
         return stmt
 
-    def parse_grouped_expression(self):
+    def parse_block_statement(self):
+        block = BlockStatement(self.current_token)
+
         self.next_token()
 
-        expression = self.parse_expression(LOWEST)
-        if not self.expect_peek(RPAREN):
-            return None
+        while not self.current_token_is(RBRACE) and not self.current_token_is(EOF):
+            stmt = self.parse_statement()
+            if stmt != None:
+                block.statements.append(stmt)
+            self.next_token()
 
-        return expression
+        return block
 
     # assertion methods
     def current_token_is(self, type_):
