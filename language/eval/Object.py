@@ -5,6 +5,7 @@ NULL_OBJ = "NULL"
 
 RETURN_VALUE_OBJ = "RETURN_VALUE"
 FUNCTION_OBJ = "FUNCTION"
+STRING_OBJ = "STRING"
 
 ERROR_OBJ = "ERROR"
 
@@ -71,3 +72,12 @@ class Function(Object):
     def inspect(self):
         _parameters = ", ".join(self.parameters)
         return f"fn({_parameters}) {{\n {self.body} \n}}"
+
+# Object -> String class
+class String(Object):
+    def __init__(self, value):
+        self.value = value
+        self.type_ = STRING_OBJ
+
+    def inspect(self):
+        return f'"{self.value}"'

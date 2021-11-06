@@ -59,6 +59,8 @@ def eval(node, env):
 
         return apply_function(function, arguments)
 
+    elif isinstance(node, StringLiteral): return Object.String(node.value)
+
 def eval_program(program, env):
     result = None
 
@@ -117,8 +119,13 @@ def eval_minus_prefix_expression(right):
 def eval_infix_expression(operator, left, right):
     if isinstance(left, Object.Integer) and isinstance(right, Object.Integer):
         return eval_integer_infix_expression(operator, left, right)
+
     elif operator == "==": return native_bool_to_boolean_object(left == right)
     elif operator == "!=": return native_bool_to_boolean_object(left != right)
+
+    elif left.type_ == Object.STRING_OBJ and right.type_ == Object.STRING_OBJ:
+        return eval_string_infix_expression(operator, left, right)
+
     elif left.type_ != right.type_: return Object.Error(f"type mismatch: {left.type_} {operator} {right.type_}")
     else: return Object.Error(f"unknown operator: {left.type_} {operator} {right.type_}")
 
@@ -133,6 +140,10 @@ def eval_integer_infix_expression(operator, left, right):
         case "==": return native_bool_to_boolean_object(left.value == right.value)
         case "!=": return native_bool_to_boolean_object(left.value != right.value)
         case _: return NULL
+
+def eval_string_infix_expression(operator, left, right):
+    if operator != "+": return Object.Error(f"unknown operator: {left.type_} {operator} {right.type_}")
+    return Object.String(left.value + right.value)
 
 def eval_if_expression(ie, env):
     condition = eval(ie.condition, env)
@@ -151,15 +162,19 @@ def apply_function(function, arguments):
     if not isinstance(function, Object.Function): return Object.Error(f"not a function: {function.type_}")
 
     extendedEnv = extend_function_env(function, arguments)
+    if isinstance(extendedEnv, Object.Error): return extendedEnv
     evaluated = eval(function.body, extendedEnv)
-
+    
     return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated
 
 def extend_function_env(function, arguments):
     env = function.env.extend()
 
     if len(function.parameters) != len(arguments): 
-        return Object.Error(f"wrong number of arguments: required {len(function.parameters)}, given {len(arguments)}")
+        past = "was" if len(arguments) == 1 else "were"
+        return Object.Error(f"wrong number of arguments: {len(function.parameters)} required but {len(arguments)} {past} given")
+
+        # missing 1 required positional argument
 
     for i in range(len(function.parameters)): env.set(function.parameters[i].value, arguments[i])
     return env

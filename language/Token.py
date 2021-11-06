@@ -1,9 +1,10 @@
 ILLEGAL = "ILLEGAL"
 EOF = "EOF"
 
-# identifiers and literals
+# identifiers and primary data types
 IDENT = "IDENT"
 INT = "INT"
+STRING = "STRING"
 
 # operations
 ASSIGN = "="
