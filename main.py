@@ -50,7 +50,7 @@ def repl():
                     
 
         except KeyboardInterrupt:
-            print("\nkeyboard interrupt")
+            print("\nkeyboardInterrupt")
     
 repl()
 # read_file("source.talon")
