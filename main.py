@@ -19,7 +19,6 @@ TODO LIST
 * refactor and comment all code *
 
 1) "example string".split() // built in functions into objects
-2) comments
 3) loops, iterables, break // maybe just a for loop & allow "for (true) {}"
 4) import and export modules
 5) error handling around native functions

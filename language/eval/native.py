@@ -27,24 +27,27 @@ def str_(*args):
     error = argument_error(args, 1)
     if error: return error
 
-    return Object.String(str(args[0]))
+    try: return Object.String(str(args[0]))
+    except ValueError: return Object.Error(f"argument to 'str' not supported, got: {args[0].type_}")
 
 def int_(*args):
     error = argument_error(args, 1)
     if error: return error
 
-    if isinstance(args[0], Object.Number): return Object.Number(int(args[0].value))
-    if isinstance(args[0], Object.String): return Object.Number(int(args[0].value))
-
+    try:
+        if isinstance(args[0], Object.Number): return Object.Number(int(args[0].value))
+        if isinstance(args[0], Object.String): return Object.Number(int(args[0].value))
+    except: return Object.Error(f"argument to 'int' not supported, got: {args[0].type_}")
     return Object.Error(f"argument to 'int' not supported, got: {args[0].type_}")
 
 def float_(*args):
     error = argument_error(args, 1)
     if error: return error
 
-    if isinstance(args[0], Object.Number): return Object.Number(float(args[0].value))
-    if isinstance(args[0], Object.String): return Object.Number(float(args[0].value))
-
+    try:
+        if isinstance(args[0], Object.Number): return Object.Number(float(args[0].value))
+        if isinstance(args[0], Object.String): return Object.Number(float(args[0].value))
+    except: return Object.Error(f"argument to 'float' not supported, got: {args[0].type_}")
     return Object.Error(f"argument to 'float' not supported, got: {args[0].type_}")
 
 def type_(*args):

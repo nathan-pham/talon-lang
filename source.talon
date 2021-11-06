@@ -8,6 +8,4 @@ let fib = function(n) {
     }
 }
 
-# lmao
-
 print(fib(n))
