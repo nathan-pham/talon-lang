@@ -73,9 +73,13 @@ class Lexer:
         match self.char:
 
             # strings
-            case '"': 
-                token = Token(STRING, self.read_string())
+            case '"': token = Token(STRING, self.read_string())
 
+            # comments
+            case "#": 
+                self.skip_comment()
+                return self.next_token()
+                
             # double character tokens
             case "=":
                 if self.peek_char() == "=":
@@ -143,5 +147,8 @@ class Lexer:
 
     # whitespace is useless
     def skip_whitespace(self):
-        while self.char in [" ", "\t", "\n", "\r"]:
-            self.read_char()
+        while self.char in [" ", "\t", "\n", "\r"]: self.read_char()
+
+    # comments are useless
+    def skip_comment(self):
+        while not self.char in ["\n", "\r", 0]: self.read_char()
