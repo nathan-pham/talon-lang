@@ -4,6 +4,7 @@ from language.Parser import Parser
 from utils.JSON import JSON
 
 import platform
+import sys
 
 pkg_name = "Talon"
 version = "0.0.1"
@@ -25,23 +26,25 @@ def repl():
     print(f"{pkg_name} {version} on {platform.platform()}")
     print('Type "help", "copyright", "credits" or "license" for more information.')
 
-    should_exit = False
+    while True:
+        try:
+            input_ = input(">>> ")
 
-    while not should_exit:
-        input_string = input(">>> ")
+            match input_:
+                case ".exit":
+                    break
 
-        match input_string:
-            case ".exit":
-                should_exit = True
+                case _:
+                    lexer = Lexer(input_)
+                    parser = Parser(lexer)
+                    program = parser.parse_program()
 
-            case _:
-                lexer = Lexer(input_string)
+                    if len(parser.errors) > 0:
+                        for error in parser.errors:
+                            print(f"{error}")
 
-                while True:
-                    token = lexer.next_token()
-                    print(token)
-                    if token.type_ == "EOF":
-                        break
-
-# repl()
-read_file("source.talon")
+        except KeyboardInterrupt:
+            print("keyboard interrupt")
+    
+repl()
+# read_file("source.talon")

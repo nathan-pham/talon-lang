@@ -1,6 +1,5 @@
 # Talon Program class
 class Program:
-
     def __init__(self):
         self.statements = []
 
@@ -14,9 +13,6 @@ class Program:
 class Node:
     def token_literal(self):
         return self.token.literal
-
-    def __str__(self):
-        return self.token_literal()
 
 # Node -> Statement class
 class Statement(Node):
@@ -32,9 +28,6 @@ class Expression(Node):
 
     def expression_node(self):
         pass
-
-    def __str__(self):
-        return self.token_literal()
 
 # Node -> Statement -> ExpressionStatement class
 class ExpressionStatement(Statement):
