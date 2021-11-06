@@ -5,6 +5,8 @@ NULL_OBJ = "NULL"
 
 RETURN_VALUE_OBJ = "RETURN_VALUE"
 
+ERROR_OBJ = "ERROR"
+
 # Object class
 class Object:
     def __init__(self):
@@ -47,3 +49,12 @@ class ReturnValue(Object):
 
     def inspect(self):
         return self.value.inspect()
+
+# Object -> Error class
+class Error(Object):
+    def __init__(self, message):
+        self.message = message
+        self.type_ = ERROR_OBJ
+
+    def inspect(self):
+        return f"ERROR: {self.message}"

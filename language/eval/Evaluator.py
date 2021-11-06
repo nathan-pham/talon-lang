@@ -17,6 +17,9 @@ def is_truthy(obj):
     elif obj == FALSE: return False
     else: return True
 
+def is_error(obj):
+    return obj and obj.type_ == Object.ERROR_OBJ
+
 def eval(node):
     if isinstance(node, Program): return eval_program(node)
     elif isinstance(node, ExpressionStatement): return eval(node.expression)
@@ -25,10 +28,13 @@ def eval(node):
 
     elif isinstance(node, PrefixExpression): 
         right = eval(node.right)
+        if is_error(right): return right
         return eval_prefix_expression(node.operator, right)
     elif isinstance(node, InfixExpression):
         left = eval(node.left)
         right = eval(node.right)
+        if is_error(left): return left
+        if is_error(right): return right
         return eval_infix_expression(node.operator, left, right)
 
     elif isinstance(node, BlockStatement): return eval_block_statement(node)
@@ -36,6 +42,7 @@ def eval(node):
 
     elif isinstance(node, ReturnStatement):
         value = eval(node.return_value)
+        if is_error(value): return value
         return Object.ReturnValue(value)
 
 def eval_program(program):
@@ -44,6 +51,7 @@ def eval_program(program):
     for stmt in program.statements:
         result = eval(stmt)
         if isinstance(result, Object.ReturnValue): return result.value
+        elif isinstance(result, Object.Error): return result
 
     return result
 
@@ -52,7 +60,7 @@ def eval_block_statement(block):
 
     for stmt in block.statements:
         result = eval(stmt)
-        if result and result.type_ == Object.RETURN_VALUE_OBJ: return result
+        if result and (result.type_ == Object.RETURN_VALUE_OBJ or result.type_ == Object.ERROR_OBJ): return result
 
     return result
 
@@ -69,7 +77,7 @@ def eval_prefix_expression(operator, right):
     match operator:
         case "!": return eval_bang_operator_expression(right)
         case "-": return eval_minus_prefix_expression(right)
-        case _: return NULL
+        case _: return Object.Error(f"unknown operator: {operator} {right.type_}")
 
 def eval_bang_operator_expression(right):
     # from utils.JSON import JSON
@@ -79,7 +87,7 @@ def eval_bang_operator_expression(right):
     else: return FALSE
 
 def eval_minus_prefix_expression(right):
-    if right.type_ != Object.INTEGER_OBJ: return NULL
+    if right.type_ != Object.INTEGER_OBJ: return Object.Error(f"unknown operator: -{right.type_}")
     return Object.Integer(-1 * right.value)
 
 def eval_infix_expression(operator, left, right):
@@ -87,7 +95,8 @@ def eval_infix_expression(operator, left, right):
         return eval_integer_infix_expression(operator, left, right)
     elif operator == "==": return native_bool_to_boolean_object(left == right)
     elif operator == "!=": return native_bool_to_boolean_object(left != right)
-    else: return NULL
+    elif left.type_ != right.type_: return Object.Error(f"type mismatch: {left.type_} {operator} {right.type_}")
+    else: return Object.Error(f"unknown operator: {left.type_} {operator} {right.type_}")
 
 def eval_integer_infix_expression(operator, left, right):
     match operator:
@@ -112,6 +121,8 @@ def eval_integer_infix_expression(operator, left, right):
 
 def eval_if_expression(ie):
     condition = eval(ie.condition)
+
+    if is_error(condition): return condition
 
     if is_truthy(condition): return eval(ie.consequence)
     elif ie.alternative != None: return eval(ie.alternative)
