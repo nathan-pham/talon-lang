@@ -18,10 +18,11 @@ def is_truthy(obj):
     else: return True
 
 def eval(node):
-    if isinstance(node, Program): return eval_statements(node.statements)
+    if isinstance(node, Program): return eval_program(node)
     elif isinstance(node, ExpressionStatement): return eval(node.expression)
     elif isinstance(node, IntegerLiteral): return Object.Integer(node.value)
     elif isinstance(node, Boolean): return native_bool_to_boolean_object(node.value)
+
     elif isinstance(node, PrefixExpression): 
         right = eval(node.right)
         return eval_prefix_expression(node.operator, right)
@@ -29,12 +30,39 @@ def eval(node):
         left = eval(node.left)
         right = eval(node.right)
         return eval_infix_expression(node.operator, left, right)
-    elif isinstance(node, BlockStatement): return eval_statements(node.statements)
+
+    elif isinstance(node, BlockStatement): return eval_block_statement(node)
     elif isinstance(node, IfExpression): return eval_if_expression(node)
+
+    elif isinstance(node, ReturnStatement):
+        value = eval(node.return_value)
+        return Object.ReturnValue(value)
+
+def eval_program(program):
+    result = None
+
+    for stmt in program.statements:
+        result = eval(stmt)
+        if isinstance(result, Object.ReturnValue): return result.value
+
+    return result
+
+def eval_block_statement(block):
+    result = None
+
+    for stmt in block.statements:
+        result = eval(stmt)
+        if result and result.type_ == Object.RETURN_VALUE_OBJ: return result
+
+    return result
 
 def eval_statements(stmts):
     result = None
-    for stmt in stmts: result = eval(stmt)
+
+    for stmt in stmts: 
+        result = eval(stmt)
+        if isinstance(result, Object.ReturnValue): return result.value
+
     return result
 
 def eval_prefix_expression(operator, right):

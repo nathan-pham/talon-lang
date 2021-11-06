@@ -1,7 +1,9 @@
-# data types
+# object types
 INTEGER_OBJ = "INTEGER"
 BOOLEAN_OBJ = "BOOLEAN"
 NULL_OBJ = "NULL"
+
+RETURN_VALUE_OBJ = "RETURN_VALUE"
 
 # Object class
 class Object:
@@ -36,3 +38,12 @@ class Null(Object):
 
     def inspect(self):
         return "null"
+
+# Object -> ReturnValue class
+class ReturnValue(Object):
+    def __init__(self, value):
+        self.value = value
+        self.type_ = RETURN_VALUE_OBJ
+
+    def inspect(self):
+        return self.value.inspect()
