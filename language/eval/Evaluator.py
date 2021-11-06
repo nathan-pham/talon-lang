@@ -1,6 +1,7 @@
 import language.eval.Object as Object
 
-from language.eval.native import native_functions
+from language.eval.native import native_functions, prototype_functions
+from language.Token import *
 from language.ast import *
 
 TRUE = Object.Boolean(True)
@@ -83,6 +84,15 @@ def eval(node, env):
         if is_error(index): return index
 
         return eval_index_expression(left, index)
+
+    elif isinstance(node, DotExpression):
+        function = eval(node.function, env)
+        if is_error(function): return function
+
+        arguments = eval_expressions(node.arguments, env)
+        if len(arguments) == 1 and is_error(arguments[0]): return arguments[0]
+
+        return apply_function(function, arguments)
     
     elif isinstance(node, HashLiteral):
         pairs = {}
@@ -144,8 +154,6 @@ def eval_prefix_expression(operator, right):
         case _: return Object.Error(f"unknown operator: {operator} {right.type_}")
 
 def eval_bang_operator_expression(right):
-    # from utils.JSON import JSON
-    # print(JSON.serialize(right))
     if isinstance(right, Object.Boolean): return FALSE if right.value else TRUE
     elif isinstance(right, Object.Null): return TRUE
     else: return FALSE
@@ -201,15 +209,25 @@ def eval_identifier(node, env):
     native_fn = native_functions.get(node.value)
     if native_fn: return native_fn
 
+    if node.prototype:
+        prototype_fn = prototype_functions.get(node.prototype.token.type_).get(node.value)
+        return prototype_fn(node.prototype) if prototype_fn else Object.Error(f"identifier not found: {node.value}")
+
+    if node.prototype and hasattr(Object.String(node.prototype), node.prototype): return Object.String
+    
+    # [node.prototype]
+
     return Object.Error(f"identifier not found: {node.value}")
 
 def apply_function(function, arguments):
     if isinstance(function, Object.Function): 
         extendedEnv = extend_function_env(function, arguments)
         if isinstance(extendedEnv, Object.Error): return extendedEnv
+
         evaluated = eval(function.body, extendedEnv)
+        return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated 
         
-        return evaluated.value if isinstance(evaluated, Object.ReturnValue) else evaluated
+        # Object.Error("function {function.body} not declared")
 
     elif isinstance(function, Object.Native): return function.function(*arguments)
 
@@ -229,6 +247,8 @@ def eval_index_expression(left, index):
         return eval_array_index_expression(left, index)
     elif left.type_ == Object.HASH_OBJ:
         return eval_hash_index_expression(left, index)
+    elif left.type_ == Object.STRING_OBJ:
+        return Object.String(left.value[index.value])
     else: return Object.Error(f"index operator not supported: {left.type_}")
 
 def eval_array_index_expression(left, index):

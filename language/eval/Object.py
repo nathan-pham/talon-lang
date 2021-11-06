@@ -1,6 +1,4 @@
 # object types
-from language.Token import FLOAT
-
 INTEGER_OBJ = "INTEGER"
 FLOAT_OBJ = "FLOAT"
 NUMBER_OBJ = "NUMBER" # (INTEGER_OBJ, FLOAT_OBJ)
@@ -123,6 +121,9 @@ class String(Object):
 
     def hash_key(self):
         return HashKey(self.type_, self.value)
+
+    def ok(self, *args):
+        return "ok!"
 
 # Object -> Native class
 class Native(Object):

@@ -68,6 +68,7 @@ class Identifier(Expression):
     def __init__(self, token, value):
         self.token = token
         self.value = value
+        self.prototype = None
 
 # Node -> Expression -> IntegerLiteral class
 class IntegerLiteral(Expression):
@@ -142,6 +143,14 @@ class IndexExpression(Expression):
         self.token = token
         self.left = left
         self.index = index
+
+# Node -> Expression -> DotExpression class
+class DotExpression(Expression):
+    def __init__(self, token, left, function=None):
+        self.token = token
+        self.left = left
+        self.function = function
+        self.arguments = []
 
 # Node -> Expression -> HashLiteral class
 class HashLiteral(Expression):

@@ -24,6 +24,7 @@ EQ = "=="
 NOT_EQ = "!="
 
 # delimiters
+DOT = "."
 COMMA = ","
 COLON = ":"
 SEMICOLON = ";"

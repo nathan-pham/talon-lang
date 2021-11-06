@@ -16,12 +16,12 @@ version = "0.0.1"
 """
 TODO LIST
 
-* refactor and comment all code *
-
-1) "example string".split() // built in functions into objects
-3) loops, iterables, break // maybe just a for loop & allow "for (true) {}"
-4) import and export modules
-6) error handling try/except blocks
+* refactor and comment all code 
+* "example string".split() // built in functions into objects
+* loops, iterables, break // maybe just a for loop & allow "for (true) {}"
+* import and export modules
+* error handling try/except blocks
+* theming with VSCode extensions
 """
 
 def talon_lang(input_, environment, inspect=True):

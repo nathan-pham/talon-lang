@@ -24,8 +24,9 @@ precedences = {
     SLASH:      PRODUCT,
     ASTERISK:   PRODUCT,
     LPAREN:     CALL,
+    ASSIGN:     INDEX,
+    DOT:        INDEX,
     LBRACKET:   INDEX,
-    ASSIGN:     EQUALS,
 }
 
 # Parser class
@@ -70,14 +71,19 @@ class Parser:
         self.register_infix(GT, self.parse_infix_expression)
         self.register_infix(LTE, self.parse_infix_expression)
         self.register_infix(GTE, self.parse_infix_expression)
+        self.register_infix(ASSIGN, self.parse_infix_expression)
+        self.register_infix(DOT, self.parse_dot_expression)
         self.register_infix(LPAREN, self.parse_call_expression)
         self.register_infix(LBRACKET, self.parse_index_expression)
-        self.register_infix(ASSIGN, self.parse_infix_expression)
 
     # retrieve the next token
     def next_token(self):
         self.current_token = self.peek_token
         self.peek_token = self.lexer.next_token()
+
+    # backtrack
+    def backtrack(self):
+        self.peek_token = self.current_token
 
     # register a prefix or infix
     def register_prefix(self, type_, fn):
@@ -163,8 +169,7 @@ class Parser:
         self.next_token()
 
         expression = self.parse_expression(LOWEST)
-        if not self.expect_peek(RPAREN):
-            return None
+        if not self.expect_peek(RPAREN): return None
 
         return expression
     
@@ -176,8 +181,23 @@ class Parser:
     def parse_index_expression(self, left):
         expression = IndexExpression(self.current_token, left)
         self.next_token()
+
         expression.index = self.parse_expression(LOWEST)
         if not self.expect_peek(RBRACKET): return None
+        
+        return expression
+
+    def parse_dot_expression(self, left):
+        expression = DotExpression(self.current_token, left)
+        self.next_token()
+
+        function = Identifier(self.current_token, self.current_token.literal)
+        function.prototype = left
+        expression.function = function
+        self.next_token()
+
+        expression.arguments = self.parse_expression_list(RPAREN)
+
         return expression
 
     # parse literals
@@ -207,33 +227,12 @@ class Parser:
         literal = FunctionLiteral(self.current_token)
 
         if not self.expect_peek(LPAREN): return None
-        literal.parameters = self.parse_function_parameters()
+        literal.parameters = self.parse_expression_list(RPAREN) #self.parse_function_parameters()
 
         if not self.expect_peek(LBRACE): return None
         literal.body = self.parse_block_statement()
 
         return literal
-
-    def parse_function_parameters(self):
-        identifiers = []
-
-        if self.peek_token_is(RPAREN):
-            self.next_token()
-            return identifiers
-
-        self.next_token()
-
-        identifier = Identifier(self.current_token, self.current_token.literal)
-        identifiers.append(identifier)
-
-        while self.peek_token_is(COMMA):
-            self.next_token()
-            self.next_token()
-            identifier = Identifier(self.current_token, self.current_token.literal)
-            identifiers.append(identifier)
-
-        if not self.expect_peek(RPAREN): return None
-        return identifiers
 
     def parse_string_literal(self):
         return StringLiteral(self.current_token, self.current_token.literal)
@@ -258,9 +257,7 @@ class Parser:
             self.next_token()
             list_.append(self.parse_expression(LOWEST))
 
-        if not self.expect_peek(end):
-            return None
-
+        if not self.expect_peek(end): return None
         return list_
 
     def parse_hash_literal(self):

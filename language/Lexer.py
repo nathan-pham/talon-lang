@@ -14,7 +14,7 @@ class Lexer:
     
     # constructor
     def __init__(self, input_):
-        self.input_ = input_ # + "\n" # pad input
+        self.input_ = input_
         self.read_char()
 
     # see next character (if any) from input
@@ -23,8 +23,6 @@ class Lexer:
 
     # read character from input
     def read_char(self):
-
-        # read the character, if EOF character -> 0
         self.char = 0 if self.read_position >= len(self.input_) else self.input_[self.read_position]
 
         # increment read_position
@@ -33,24 +31,20 @@ class Lexer:
 
     # read identifier from input
     def read_identifier(self):
-
-        # cache position
         position = self.position
 
         # increment position while next token is a letter
         while self.char != 0 and (self.char.isalnum() or self.char == "_"): self.read_char()
-        self.read_position = self.position
+        self.backtrack()
         return self.input_[position:self.position]
 
     # read number from input
     def read_number(self):
-
-        # cache position
         position = self.position
 
         # increment position while next token is a digit
         while self.char != 0 and (self.char.isnumeric() or self.char == "."): self.read_char()
-        self.read_position = self.position
+        self.backtrack()
         return self.input_[position:self.position]
 
     # read string from input
@@ -63,11 +57,13 @@ class Lexer:
 
         return self.input_[position:self.position]
 
+    # backtrack
+    def backtrack(self):
+        self.read_position = self.position
+
     # get the next token
     def next_token(self):
-
         self.skip_whitespace()
-        
         token = Token(ILLEGAL, self.char)
 
         match self.char:
@@ -79,38 +75,35 @@ class Lexer:
             case "#": 
                 self.skip_comment()
                 return self.next_token()
-                
+
             # double character tokens
             case "=":
                 if self.peek_char() == "=":
                     char = self.char
                     self.read_char()             
                     token = Token(EQ, char + self.char)
-                else:
-                    token = Token(ASSIGN, self.char)
+                else: token = Token(ASSIGN, self.char)
             case "!":
                 if self.peek_char() == "=":
                     char = self.char
                     self.read_char()
                     token = Token(NOT_EQ, char + self.char)
-                else:
-                    token = Token(BANG, self.char)
+                else: token = Token(BANG, self.char)
             case "<":
                 if self.peek_char() == "=":
                     char = self.char
                     self.read_char()
                     token = Token(LTE, char + self.char)
-                else:
-                    token = Token(LT, self.char)
+                else: token = Token(LT, self.char)
             case ">":
                 if self.peek_char() == "=":
                     char = self.char
                     self.read_char()
                     token = Token(GTE, char + self.char)
-                else:
-                    token = Token(GT, self.char)
+                else: token = Token(GT, self.char)
 
             # single character tokens
+            case ".": token = Token(DOT, self.char)
             case ":": token = Token(COLON, self.char)
             case ";": token = Token(SEMICOLON, self.char)
             case "(": token = Token(LPAREN, self.char)
