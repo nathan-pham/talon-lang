@@ -37,6 +37,8 @@ class Parser:
         self.next_token()
 
         self.errors = []
+
+        # register prefix and infix
         self.prefix_parse_fns = {}
         self.infix_parse_fns = {}
 

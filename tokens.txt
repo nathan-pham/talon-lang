@@ -1,67 +1,202 @@
-fn(x, y) { x + y; }
+a + add(b * c) + d;
+add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8));
 
 [
     {
         "expression": {
-            "body": {
-                "statements": [
-                    {
-                        "expression": {
+            "left": {
+                "left": {
+                    "token": {
+                        "literal": "a", 
+                        "type_": "IDENT"
+                    },
+                    "value": "a"        
+                },
+                "operator": "+",        
+                "right": {
+                    "arguments": [
+                        {
                             "left": {
                                 "token": {
-                                    "literal": "x",
+                                    "literal": "b",
                                     "type_": "IDENT"
                                 },
-                                "value": "x"
+                                "value": "b"
                             },
-                            "operator": "+",
+                            "operator": "*",
                             "right": {
                                 "token": {
-                                    "literal": "y",
+                                    "literal": "c",
                                     "type_": "IDENT"
                                 },
-                                "value": "y"
+                                "value": "c"
                             },
                             "token": {
-                                "literal": "+",
-                                "type_": "+"
+                                "literal": "*",
+                                "type_": "*"
                             }
-                        },
-                        "token": {
-                            "literal": "x",
-                            "type_": "IDENT"
                         }
+                    ],
+                    "function": {
+                        "token": {
+                            "literal": "add",
+                            "type_": "IDENT"
+                        },
+                        "value": "add"
+                    },
+                    "token": {
+                        "literal": "(",
+                        "type_": "("
                     }
-                ],
+                },
                 "token": {
-                    "literal": "{",
-                    "type_": "{"
+                    "literal": "+",
+                    "type_": "+"
                 }
             },
-            "parameters": [
-                {
-                    "token": {
-                        "literal": "x",
-                        "type_": "IDENT"
-                    },
-                    "value": "x"
+            "operator": "+",
+            "right": {
+                "token": {
+                    "literal": "d",
+                    "type_": "IDENT"
                 },
-                {
-                    "token": {
-                        "literal": "y",
-                        "type_": "IDENT"
-                    },
-                    "value": "y"
-                }
-            ],
+                "value": "d"
+            },
             "token": {
-                "literal": "fn",
-                "type_": "FUNCTION"
+                "literal": "+",
+                "type_": "+"
             }
         },
         "token": {
-            "literal": "fn",
-            "type_": "FUNCTION"
+            "literal": "a",
+            "type_": "IDENT"
+        }
+    },
+    {
+        "expression": {
+            "arguments": [
+                {
+                    "token": {
+                        "literal": "a",
+                        "type_": "IDENT"
+                    },
+                    "value": "a"
+                },
+                {
+                    "token": {
+                        "literal": "b",
+                        "type_": "IDENT"
+                    },
+                    "value": "b"
+                },
+                {
+                    "token": {
+                        "literal": "1",
+                        "type_": "INT"
+                    },
+                    "value": 1
+                },
+                {
+                    "left": {
+                        "token": {
+                            "literal": "2",
+                            "type_": "INT"
+                        },
+                        "value": 2
+                    },
+                    "operator": "*",
+                    "right": {
+                        "token": {
+                            "literal": "3",
+                            "type_": "INT"
+                        },
+                        "value": 3
+                    },
+                    "token": {
+                        "literal": "*",
+                        "type_": "*"
+                    }
+                },
+                {
+                    "left": {
+                        "token": {
+                            "literal": "4",
+                            "type_": "INT"
+                        },
+                        "value": 4
+                    },
+                    "operator": "+",
+                    "right": {
+                        "token": {
+                            "literal": "5",
+                            "type_": "INT"
+                        },
+                        "value": 5
+                    },
+                    "token": {
+                        "literal": "+",
+                        "type_": "+"
+                    }
+                },
+                {
+                    "arguments": [
+                        {
+                            "token": {
+                                "literal": "6",
+                                "type_": "INT"
+                            },
+                            "value": 6
+                        },
+                        {
+                            "left": {
+                                "token": {
+                                    "literal": "7",
+                                    "type_": "INT"
+                                },
+                                "value": 7
+                            },
+                            "operator": "*",
+                            "right": {
+                                "token": {
+                                    "literal": "8",
+                                    "type_": "INT"
+                                },
+                                "value": 8
+                            },
+                            "token": {
+                                "literal": "*",
+                                "type_": "*"
+                            }
+                        }
+                    ],
+                    "function": {
+                        "token": {
+                            "literal": "add",
+                            "type_": "IDENT"
+                        },
+                        "value": "add"
+                    },
+                    "token": {
+                        "literal": "(",
+                        "type_": "("
+                    }
+                }
+            ],
+            "function": {
+                "token": {
+                    "literal": "add",
+                    "type_": "IDENT"
+                },
+                "value": "add"
+            },
+            "token": {
+                "literal": "(",
+                "type_": "("
+            }
+        },
+        "token": {
+            "literal": "add",
+            "type_": "IDENT"
         }
     }
 ]
