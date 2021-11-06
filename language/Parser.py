@@ -56,6 +56,7 @@ class Parser:
         self.register_prefix(FUNCTION, self.parse_function_literal)
         self.register_prefix(STRING, self.parse_string_literal)
         self.register_prefix(LBRACKET, self.parse_array_literal)
+        self.register_prefix(LBRACE, self.parse_hash_literal)
 
         self.register_infix(PLUS, self.parse_infix_expression)
         self.register_infix(MINUS, self.parse_infix_expression)
@@ -174,24 +175,6 @@ class Parser:
         if not self.expect_peek(RBRACKET): return None
         return expression
 
-    def parse_call_arguments(self):
-        arguments = []
-
-        if self.peek_token_is(RPAREN):
-            self.next_token()
-            return arguments
-
-        self.next_token()
-        arguments.append(self.parse_expression(LOWEST))
-
-        while self.peek_token_is(COMMA):
-            self.next_token()
-            self.next_token()
-            arguments.append(self.parse_expression(LOWEST))
-            
-        if not self.expect_peek(RPAREN): return None
-        return arguments
-
     # parse literals
     def parse_identifier(self):
         return Identifier(self.current_token, self.current_token.literal)
@@ -274,6 +257,24 @@ class Parser:
             return None
 
         return list_
+
+    def parse_hash_literal(self):
+        hash = HashLiteral(self.current_token)
+
+        while not self.peek_token_is(RBRACE):
+            self.next_token()
+            key = self.parse_expression(LOWEST)
+
+            if not self.expect_peek(COLON): return None
+
+            self.next_token()
+            value = self.parse_expression(LOWEST)
+
+            hash.pairs[key] = value
+            if not self.peek_token_is(RBRACE) and not self.expect_peek(COMMA): return None
+
+        if not self.expect_peek(RBRACE): return None
+        return hash
     
     # parse statements
     def parse_statement(self):
@@ -351,7 +352,7 @@ class Parser:
 
     # error handling
     def peek_error(self, type_):
-        self.errors.append(f"expected next token to be {type_}, got {self.peek_token.type_} instead")
+        self.errors.append(f"expected next token to be {type_} got {self.peek_token.type_} instead")
 
     def no_prefix_parse_fn_error(self, type_):
         self.errors.append(f"no prefix parse function for {type_} found")

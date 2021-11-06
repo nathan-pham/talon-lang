@@ -58,7 +58,7 @@ def repl():
 
                 if len(parser.errors) > 0:
                     for error in parser.errors:
-                        print(f"PARSE ERROR: {error}")
+                        print(f"PARSER ERROR: {error}")
                 else:
                     evaluated = eval(program, environment)
                     if evaluated is not None:

@@ -90,6 +90,7 @@ class Lexer:
                     token = Token(BANG, self.char)
 
             # single character tokens
+            case ":": token = Token(COLON, self.char)
             case ";": token = Token(SEMICOLON, self.char)
             case "(": token = Token(LPAREN, self.char)
             case ")": token = Token(RPAREN, self.char)
@@ -119,7 +120,7 @@ class Lexer:
                     token = Token(FLOAT if "." in number else INT, number)
 
                 else:
-                    print('hmmm' + self.char)
+                    print(f"LEXER ERROR: unexpected character {self.char}")
                     token = Token(ILLEGAL, self.char)
 
         self.read_char()

@@ -135,3 +135,9 @@ class IndexExpression(Expression):
         self.token = token
         self.left = left
         self.index = index
+
+# Node -> Expression -> HashLiteral class
+class HashLiteral(Expression):
+    def __init__(self, token):
+        self.token = token
+        self.pairs = {}

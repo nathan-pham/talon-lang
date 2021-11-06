@@ -12,10 +12,10 @@ RETURN_VALUE_OBJ = "RETURN_VALUE"
 FUNCTION_OBJ = "FUNCTION"
 STRING_OBJ = "STRING"
 ARRAY_OBJ = "ARRAY"
-
-ERROR_OBJ = "ERROR"
+HASH_OBJ = "HASH"
 
 NATIVE_OBJ = "NATIVE"
+ERROR_OBJ = "ERROR"
 
 # Object class
 class Object:
@@ -24,6 +24,9 @@ class Object:
 
     def inspect(self):
         pass
+
+    def hashable(self):
+        return hasattr(self, "hash_key") and callable(self.hash_key)
 
 # Object -> Integer class
 # class Integer(Object):
@@ -51,6 +54,9 @@ class Number(Object):
 
     def inspect(self):
         return self.value
+    
+    def hash_key(self):
+        return HashKey(self.type_, self.value)
 
 # Object -> Boolean class
 class Boolean(Object):
@@ -60,6 +66,10 @@ class Boolean(Object):
 
     def inspect(self):
         return str(self.value).lower()
+
+    def hash_key(self):
+        value = 1 if self.value else 0
+        return HashKey(self.type_, value)
 
 # Object -> Null class
 class Null(Object):
@@ -110,6 +120,9 @@ class String(Object):
     def inspect(self):
         return f'"{self.value}"'
 
+    def hash_key(self):
+        return HashKey(self.type_, self.value)
+
 # Object -> Native class
 class Native(Object):
     def __init__(self, function):
@@ -128,3 +141,32 @@ class Array(Object):
     def inspect(self):
         _elements = ", ".join([str(e.inspect()) for e in self.elements])
         return f"[{_elements}]"
+
+# Object -> HashKey class
+class HashKey(Object):
+    def __init__(self, type_, value):
+        self.type_ = type_
+        self.value = value
+
+    def inspect(self):
+        if self.type_ == BOOLEAN_OBJ: return "true" if self.value else "false"
+        return self.value
+
+# Object -> HashPair class
+class HashPair(Object):
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def inspect(self):
+        return self.value.inspect()
+
+# Object -> Hash class
+class Hash(Object):
+    def __init__(self, pairs):
+        self.pairs = pairs or {}
+        self.type_ = HASH_OBJ
+
+    def inspect(self):
+        _pairs = ", ".join([f"{k.inspect()}: {v.inspect()}" for k, v in self.pairs.items()])
+        return f"{{{_pairs}}}"

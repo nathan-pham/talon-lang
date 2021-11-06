@@ -76,6 +76,21 @@ def eval(node, env):
         if is_error(index): return index
 
         return eval_index_expression(left, index)
+    
+    elif isinstance(node, HashLiteral):
+        pairs = {}
+
+        for key, value in node.pairs.items():
+            key_obj = eval(key, env)
+            if is_error(key_obj): return key_obj
+            if not key_obj.hashable(): return Object.Error(f"unusable as hash key: {key_obj.type_}")
+
+            value_obj = eval(value, env)
+            if is_error(value_obj): return value_obj
+
+            pairs[key_obj.hash_key()] = Object.HashPair(key_obj, value_obj)
+
+        return Object.Hash(pairs)
 
 def eval_program(program, env):
     result = None
@@ -203,11 +218,19 @@ def extend_function_env(function, arguments):
 def eval_index_expression(left, index):
     if left.type_ == Object.ARRAY_OBJ and isinstance(index, Object.Number):
         return eval_array_index_expression(left, index)
-    # elif left.type_ == Object.HASH_OBJ:
-    #     return eval_hash_index_expression(left, index)
+    elif left.type_ == Object.HASH_OBJ:
+        return eval_hash_index_expression(left, index)
     else: return Object.Error(f"index operator not supported: {left.type_}")
 
 def eval_array_index_expression(left, index):
     idx = index.value
     if idx < 0 or idx >= len(left.elements): return NULL
     return left.elements[idx]
+
+def eval_hash_index_expression(left, index):
+    if not index.hashable(): return Object.Error(f"unusable as hash key: {hash.type_}")
+
+    for key, value in left.pairs.items():
+        if key.value == index.value and key.type_ == index.type_: return value
+
+    return NULL

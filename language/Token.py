@@ -23,6 +23,7 @@ NOT_EQ = "!="
 
 # delimiters
 COMMA = ","
+COLON = ":"
 SEMICOLON = ";"
 
 LPAREN = "("
