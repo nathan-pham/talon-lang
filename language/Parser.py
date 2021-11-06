@@ -43,6 +43,9 @@ class Parser:
         self.register_prefix(INT, self.parse_integer_iteral)
         self.register_prefix(BANG, self.parse_prefix_expression)
         self.register_prefix(MINUS, self.parse_prefix_expression)
+        self.register_prefix(TRUE, self.parse_boolean)
+        self.register_prefix(FALSE, self.parse_boolean)
+        self.register_prefix(LPAREN, self.parse_grouped_expression)
 
         self.register_infix(PLUS, self.parse_infix_expression)
         self.register_infix(MINUS, self.parse_infix_expression)
@@ -133,6 +136,9 @@ class Parser:
             self.errors.append(f"could not parse {self.current_token.literal} as an integer")
             return None
 
+    def parse_boolean(self):
+        return Boolean(self.current_token, self.current_token_is(TRUE))
+
     # parse statements
     def parse_statement(self):
 
@@ -178,6 +184,15 @@ class Parser:
             self.next_token()
 
         return stmt
+
+    def parse_grouped_expression(self):
+        self.next_token()
+
+        expression = self.parse_expression(LOWEST)
+        if not self.expect_peek(RPAREN):
+            return None
+
+        return expression
 
     # assertion methods
     def current_token_is(self, type_):

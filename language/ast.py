@@ -69,6 +69,12 @@ class IntegerLiteral(Expression):
         self.token = token
         self.value = value
 
+# Node -> Expression -> Boolean class
+class Boolean(Expression):
+    def __init__(self, token, value=None):
+        self.token = token
+        self.value = value
+
 # Node -> Expression -> PrefixExpression class
 class PrefixExpression(Expression):
     def __init__(self, token, operator, right=None):
@@ -83,3 +89,11 @@ class InfixExpression(Expression):
         self.left = left
         self.operator = operator
         self.right = right
+
+# Node -> Expression -> IfExpression class
+class IfExpression(Expression):
+    def __init__(self, token, condition, consequence, alternative):
+        self.token = token
+        self.condition = condition
+        self.consequence = consequence
+        self.alternative = alternative

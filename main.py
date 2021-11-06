@@ -15,8 +15,8 @@ def read_file(path):
         lexer = Lexer(file_contents)
         parser = Parser(lexer)
         program = parser.parse_program()
-        for statement in program.statements:
-            print(JSON.serialize(statement))
+        # for statement in program.statements:
+        print(JSON.serialize(program.statements))
         print(parser.errors)
         file.close()
 

@@ -1,19 +1,35 @@
+1 + 2 / 3
+
 {
     "expression": {
         "left": {
             "token": {
-                "literal": "5",
+                "literal": "1",
                 "type_": "INT"
             },
-            "value": 5
+            "value": 1
         },
         "operator": "+",
         "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
+            "left": {
+                "token": {
+                    "literal": "2",
+                    "type_": "INT"
+                },
+                "value": 2
             },
-            "value": 5
+            "operator": "/",
+            "right": {
+                "token": {
+                    "literal": "3",
+                    "type_": "INT"
+                },
+                "value": 3
+            },
+            "token": {
+                "literal": "/",
+                "type_": "/"
+            }
         },
         "token": {
             "literal": "+",
@@ -21,80 +37,41 @@
         }
     },
     "token": {
-        "literal": "5",
+        "literal": "1",
         "type_": "INT"
     }
 }
+
 {
     "expression": {
         "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
+            "left": {
+                "token": {
+                    "literal": "1",
+                    "type_": "INT"
+                },
+                "value": 1
             },
-            "value": 5
-        },
-        "operator": "-",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
+            "operator": "+",
+            "right": {
+                "token": {
+                    "literal": "2",
+                    "type_": "INT"
+                },
+                "value": 2
             },
-            "value": 5
-        },
-        "token": {
-            "literal": "-",
-            "type_": "-"
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
             "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "operator": "*",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "token": {
-            "literal": "*",
-            "type_": "*"
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
+                "literal": "+",
+                "type_": "+"
+            }
         },
         "operator": "/",
         "right": {
             "token": {
-                "literal": "5",
+                "literal": "3",
                 "type_": "INT"
             },
-            "value": 5
+            "value": 3
         },
         "token": {
             "literal": "/",
@@ -102,115 +79,7 @@
         }
     },
     "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "operator": ">",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "token": {
-            "literal": ">",
-            "type_": ">"
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "operator": "<",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "token": {
-            "literal": "<",
-            "type_": "<"
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "operator": "==",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "token": {
-            "literal": "==",
-            "type_": "=="
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
-    }
-}
-{
-    "expression": {
-        "left": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "operator": "!=",
-        "right": {
-            "token": {
-                "literal": "5",
-                "type_": "INT"
-            },
-            "value": 5
-        },
-        "token": {
-            "literal": "!=",
-            "type_": "!="
-        }
-    },
-    "token": {
-        "literal": "5",
-        "type_": "INT"
+        "literal": "(",
+        "type_": "("
     }
 }
