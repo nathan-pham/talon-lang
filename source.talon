@@ -10,3 +10,5 @@ if (three > 1) {
 } else {
     puts("ok less than three")
 }
+
+puts(add)

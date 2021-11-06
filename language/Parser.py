@@ -23,7 +23,8 @@ precedences = {
     SLASH:      PRODUCT,
     ASTERISK:   PRODUCT,
     LPAREN:     CALL,
-    LBRACKET:   INDEX
+    LBRACKET:   INDEX,
+    ASSIGN:     EQUALS,
 }
 
 # Parser class
@@ -68,6 +69,7 @@ class Parser:
         self.register_infix(GT, self.parse_infix_expression)
         self.register_infix(LPAREN, self.parse_call_expression)
         self.register_infix(LBRACKET, self.parse_index_expression)
+        self.register_infix(ASSIGN, self.parse_infix_expression)
 
     # retrieve the next token
     def next_token(self):
@@ -283,20 +285,18 @@ class Parser:
             return self.parse_let_statement()
         elif self.current_token.type_ == RETURN:
             return self.parse_return_statement()
-
+        elif self.current_token.type_ == IDENT:
+            return self.parse_assignment_statement()
+            
         return self.parse_expression_statement()
 
     def parse_let_statement(self):
         stmt = LetStatement(self.current_token)
 
-        if not self.expect_peek(IDENT):
-            return None
-        
+        if not self.expect_peek(IDENT): return None
         stmt.name = Identifier(self.current_token, self.current_token.literal)
 
-        if not self.expect_peek(ASSIGN):
-            return None
-
+        if not self.expect_peek(ASSIGN): return None
         self.next_token()
 
         stmt.value = self.parse_expression(LOWEST)
@@ -306,10 +306,23 @@ class Parser:
     
     def parse_return_statement(self):
         stmt = ReturnStatement(self.current_token)
-
+        
         self.next_token()
 
         stmt.return_value = self.parse_expression(LOWEST)
+        if self.peek_token_is(SEMICOLON): self.next_token()
+
+        return stmt
+
+    def parse_assignment_statement(self):
+        stmt = AssignmentStatement(self.current_token)
+        stmt.name = Identifier(self.current_token, self.current_token.literal)
+        
+        if not self.peek_token_is(ASSIGN): return self.parse_expression_statement()
+        self.next_token()
+        self.next_token()
+
+        stmt.value = self.parse_expression(LOWEST)
         if self.peek_token_is(SEMICOLON): self.next_token()
 
         return stmt

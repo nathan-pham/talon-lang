@@ -56,6 +56,13 @@ class BlockStatement(Statement):
         self.token = token
         self.statements = []
 
+# Node -> Statement -> SetStatement class
+class AssignmentStatement(Statement):
+    def __init__(self, token, name=None, value=None):
+        self.token = token
+        self.name = name
+        self.value = value
+
 # Node -> Expression -> Identifier class
 class Identifier(Expression):
     def __init__(self, token, value):

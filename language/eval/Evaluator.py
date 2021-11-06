@@ -48,6 +48,13 @@ def eval(node, env):
     elif isinstance(node, LetStatement):
         value = eval(node.value, env)
         if is_error(value): return value
+        if env.get(node.name.value): return Object.Error(f"identifier '{node.name.value}' already declared")
+        env.set(node.name.value, value)
+    elif isinstance(node, AssignmentStatement):
+        value = eval(node.value, env)
+        if is_error(value): return value
+
+        if not env.get(node.name.value): return Object.Error(f"identifier '{node.name.value}' not declared")
         env.set(node.name.value, value)
 
     elif isinstance(node, Identifier): return eval_identifier(node, env)
