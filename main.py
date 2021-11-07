@@ -17,7 +17,6 @@ version = "0.0.1"
 TODO LIST
 
 * refactor and comment all code 
-* "example string".split() // built in functions into objects
 * loops, iterables, break // maybe just a for loop & allow "for (true) {}"
 * import and export modules
 * error handling try/except blocks

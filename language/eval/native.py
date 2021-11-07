@@ -28,7 +28,7 @@ def str_(*args):
     error = argument_error(args, 1)
     if error: return error
 
-    try: return Object.String(str(args[0]))
+    try: return Object.String(str(args[0].value))
     except ValueError: return Object.Error(f"argument to 'str' not supported, got: {args[0].type_}")
 
 def int_(*args):
