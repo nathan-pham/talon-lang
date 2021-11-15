@@ -10,5 +10,5 @@ let for = function(value) {
 }
 
 # for(10)(function(value) {
-    # print(value)
+#   print(value)
 # })
