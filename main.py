@@ -12,9 +12,11 @@ TODO LIST
 
 * refactor and comment all code 
 * loops, iterables, break // maybe just a for loop & allow "for (true) {}"
-* import and export modules
 * error handling try/except blocks
 * theming with VSCode extensions
+* finish REPL mode
+* documentation
+* more native functions & prototypes
 """
 
 def repl():

@@ -123,7 +123,7 @@ class String(Object):
         return HashKey(self.type_, self.value)
 
     def ok(self, *args):
-        return "ok!"
+        return String("ok")
 
 # Object -> Native class
 class Native(Object):
