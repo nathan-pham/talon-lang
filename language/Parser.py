@@ -287,6 +287,8 @@ class Parser:
             return self.parse_return_statement()
         elif self.current_token.type_ == IDENT:
             return self.parse_assignment_statement()
+        elif self.current_token.type_ == IMPORT:
+            return self.parse_import_statement()
             
         return self.parse_expression_statement()
 
@@ -347,6 +349,19 @@ class Parser:
             self.next_token()
         
         return block
+
+    def parse_import_statement(self):
+
+        stmt = ImportStatement(self.current_token)
+        self.next_token()
+
+        if self.current_token_is(STRING):
+            stmt.file = self.current_token.literal
+            # self.next_token()
+
+        if self.peek_token_is(SEMICOLON): self.next_token()
+
+        return stmt
 
     # assertion methods
     def current_token_is(self, type_):

@@ -63,6 +63,12 @@ class AssignmentStatement(Statement):
         self.name = name
         self.value = value
 
+# Node -> Statement -> ImportStatement class
+class ImportStatement(Statement):
+    def __init__(self, token, file=None):
+        self.token = token
+        self.file = file
+
 # Node -> Expression -> Identifier class
 class Identifier(Expression):
     def __init__(self, token, value):

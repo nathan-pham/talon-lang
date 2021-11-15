@@ -1,10 +1,16 @@
-import language.eval.Object as Object
 
 from language.eval.native import native_functions
 from language.Token import *
 from language.ast import *
 
 from utils.JSON import JSON
+
+from language.eval.Environment import Environment
+import language.eval.Object as Object
+
+from language.Lexer import Lexer
+from language.Parser import Parser
+
 
 TRUE = Object.Boolean(True)
 FALSE = Object.Boolean(False)
@@ -59,7 +65,15 @@ def eval(node, env):
 
         if not env.get(node.name.value): return Object.Error(f"identifier '{node.name.value}' not declared")
         env.set(node.name.value, value)
+    
+    elif isinstance(node, ImportStatement):
+        with open(f"{node.file}.talon", "r") as file:
+            file_contents = file.read().strip()
+            file_env = talon_lang(file_contents, Environment(), False)
 
+            for key, value in file_env.store.items():
+                env.set(key, value)
+        
     elif isinstance(node, Identifier): return eval_identifier(node, env)
 
     elif isinstance(node, FunctionLiteral): return Object.Function(node.parameters, node.body, env)
@@ -267,3 +281,18 @@ def eval_hash_index_expression(left, index):
         if key.value == index.value and key.type_ == index.type_: return value.value
 
     return NULL
+
+def talon_lang(input_, environment, inspect=True):
+    lexer = Lexer(input_)
+    parser = Parser(lexer)
+    program = parser.parse_program()
+
+    errors = lexer.errors + parser.errors
+    for error in errors: print(error.inspect())
+
+    if len(errors) == 0:
+        evaluated = eval(program, environment)
+        if evaluated and inspect: print(evaluated.inspect())
+        elif isinstance(evaluated, Object.Error): print(evaluated.inspect())
+
+    return environment

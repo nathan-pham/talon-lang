@@ -44,6 +44,7 @@ FALSE = "FALSE"
 IF = "IF"
 ELSE = "ELSE"
 RETURN = "RETURN"
+IMPORT = "IMPORT"
 
 def lookup_ident(ident):
 
@@ -54,7 +55,8 @@ def lookup_ident(ident):
         "false": FALSE,
         "if": IF,
         "else": ELSE,
-        "return": RETURN
+        "return": RETURN,
+        "import": IMPORT
     }
 
     return keywords.get(ident, IDENT)

@@ -1,11 +1,5 @@
-from language.Lexer import Lexer
-from language.Parser import Parser
-
 from language.eval.Environment import Environment
-from language.eval.evaluator import eval
-import language.eval.Object as Object
-
-from utils.JSON import JSON
+from language.eval.evaluator import talon_lang
 
 import platform
 import sys
@@ -22,19 +16,6 @@ TODO LIST
 * error handling try/except blocks
 * theming with VSCode extensions
 """
-
-def talon_lang(input_, environment, inspect=True):
-    lexer = Lexer(input_)
-    parser = Parser(lexer)
-    program = parser.parse_program()
-
-    errors = lexer.errors + parser.errors
-    for error in errors: print(error.inspect())
-
-    if len(errors) == 0:
-        evaluated = eval(program, environment)
-        if evaluated and inspect: print(evaluated.inspect())
-        elif isinstance(evaluated, Object.Error): print(evaluated.inspect())
 
 def repl():
     print(f"Welcome to {pkg_name} v{version} on {platform.platform()}")
